@@ -1,5 +1,5 @@
 # openMicroInverter 
-#![ Fig. 0.](figures/oshw-logo-100-px.png  "oshw logo.")
+![ Fig. 0.](figures/oshw-logo-100-px.png  "oshw logo.")
 ## An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and grid tie inverters
 
 ### What is the openMicroInverter?
@@ -11,7 +11,7 @@ The *openMicroInverter* or open Micro-Inverter, abbreviated as oUI, is an Arduin
 4. as solar-inverter or inverter for energy storage systems.
 5. as a bi-directional power converter.
 
-Why then using the 8-bit Arduino-UNO? Just because it is fun to squeeze the maximum out of it:-) Furthermore, this project shows the full capabilities of the TrueRMS Arduino library from this repository. Applications i, ii and iii have been successfully realized so far...
+Why then using the 8-bit Arduino-UNO? Just because it is fun to squeeze the maximum out of it:-) Furthermore, this project shows the full capabilities of the TrueRMS Arduino library from my repositories. Applications i, ii and iii have been successfully realized so far...
 
 This work is still in progress...
 
