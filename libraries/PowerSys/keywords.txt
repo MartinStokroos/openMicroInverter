@@ -1,0 +1,24 @@
+#######################################
+# Syntax coloring map for PowerSystems lib
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Pll			KEYWORD1
+Park			KEYWORD1
+iPark			KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin			KEYWORD2
+update			KEYWORD2
+publish			KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
