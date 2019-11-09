@@ -1,10 +1,11 @@
 /*
  *
  * File: Metering.ino
- * Purpose: openMicroInverter example project for demonstrating power metering.
- * Version: 1.0.0
- * Date: 30-10-2019
- * URL: https://github.com/MartinStokroos/TrueRMS
+ * Purpose: openMicroInverter example project demonstrating power and energy metering.
+ * Version: 1.0.1
+ * Date: 07-11-2019
+ * 
+ * URL: https://github.com/MartinStokroos/openMicroInverter
  * License: MIT License
  *
  * Copyright (c) M.Stokroos 2019
@@ -12,8 +13,7 @@
  *
  *
  *
- * This sketch was tested with openMicroInverter_dev hardware.
- * 
+ * This sketch has been tested on openMicroInverter_dev hardware.
  */
 
 #include <digitalWriteFast.h>	// library for high performance digital reads and writes by jrraines
@@ -235,5 +235,6 @@ ISR(ADC_vect){
 *  Timer1 ISR running at 6000Hz. 
 *********************************************************************/
 ISR(TIMER1_OVF_vect) {
-  //ISR used to trigger the ADC.
+  // Empty ISR. Only required here to trigger the ADC.
+  // Important: ADC_vect ISR must be completed before the next call.
 }
