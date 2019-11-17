@@ -6,14 +6,13 @@
  * Date: 07-11-2019
  * 
  * URL: https://github.com/MartinStokroos/openMicroInverter
+ * 
  * License: MIT License
  *
  * Copyright (c) M.Stokroos 2019
  *
  *
- *
- *
- * This sketch has been tested on openMicroInverter_dev hardware.
+ * This sketch has been tested with openMicroInverter_dev hardware.
  */
 
 #include <digitalWriteFast.h>	// library for high performance digital reads and writes by jrraines
@@ -224,7 +223,7 @@ ISR(ADC_vect){
   ADMUX = (ADMUX & B11110000) | adcMuxIdx;   //set the ADC MUX-channel for the next run.
 
   digitalWriteFast(PIN_DEBUG, LOW); //pin low
-} // runtime about 90us max (rms-bias restoration).
+} // runtime about 90us max.
 
 
 
@@ -235,6 +234,6 @@ ISR(ADC_vect){
 *  Timer1 ISR running at 6000Hz. 
 *********************************************************************/
 ISR(TIMER1_OVF_vect) {
-  // Empty ISR. Only required here to trigger the ADC.
+  // Empty ISR. Required here to trigger the ADC.
   // Important: ADC_vect ISR must be completed before the next call.
 }
