@@ -36,7 +36,7 @@
 //*********** Orthogonal Signal Generator initialize ****//
 void PowerControl::osgBegin(float _freq, float _deltat) {
 	// calculate DDS tuning word
-	tuningWord=(unsigned long)(pow(2,32)*_freq*_deltat);
+	tuningWord=(unsigned long)(pow(2,32) * _freq * _deltat);
 }
 
 
