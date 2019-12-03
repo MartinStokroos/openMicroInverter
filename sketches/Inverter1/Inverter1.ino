@@ -1,8 +1,8 @@
 /*
  * File: Inverter.ino
  * Purpose: openMicroInverter example project. This sketch establishes a voltage-mode inverter without output voltage control (open loop).
- * Version: 1.0.0
- * Date: 16-11-2019
+ * Version: 1.0.1
+ * Date: 02-12-2019
  *
  * URL: https://github.com/MartinStokroos/openMicroInverter
  *
@@ -12,7 +12,7 @@
  *
  *
  *
- * This sketch has been tested on the openMicroInverter_dev hardware.
+ * This sketch has been tested with the openMicroInverter_dev hardware.
  *
  */
 
@@ -24,8 +24,8 @@
 #include <PowerSys.h> // https://github.com/MartinStokroos/openMicroInverter
 
 // switching mode:
-#define UNIPOL    // unipolar switching
-//#define BIPOL   // bipolar switching
+//#define UNIPOL    // unipolar switching
+#define BIPOL   // bipolar switching
 //#define HYBRID  // bipolar switching, bottom H-bridge=LF
 
 #define LPERIOD 1000000    // loop period time in us. In this case 1s.
@@ -118,26 +118,36 @@ void setup(){
   bitClear(TCCR1A, WGM11);
   bitClear(TCCR1B, WGM12);
   bitSet(TCCR1B, WGM13);
-  // top value. Foc=fclk/(2*N*TOP)
-  ICR1 = 0x0535; //f=6kHz, min 0x03FF;
-  #define ICR1_OFFSET 0x09B;
+  // top value. f_TIM1 = fclk/(2*N*TOP)
+  ICR1 = 0x0536; //0x0535, f=6kHz, min 0x03FF;
 
   #ifdef UNIPOL
+  #define ICR1_OFFSET 0x09B;
+    digitalWriteFast(PIN_H_AHI, HIGH);
+    digitalWriteFast(PIN_H_BHI, HIGH);
     bitClear(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
     bitClear(TCCR1A, COM1B0);  // Compare Match PWM 9
     bitSet(TCCR1A, COM1B1);
   #endif
+
   #ifdef BIPOL
+  #define ICR1_OFFSET 0x09B;
+    digitalWriteFast(PIN_H_AHI, HIGH);
+    digitalWriteFast(PIN_H_BHI, HIGH);
     bitClear(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
     bitSet(TCCR1A, COM1B0);  // Compare Match PWM9, inverted
     bitSet(TCCR1A, COM1B1);
   #endif
+
   #ifdef HYBRID
-    bitClear(TCCR1A, COM1A0);  // Compare Match PWM 10
+  #define ICR1_OFFSET 0x09B;
+    digitalWriteFast(PIN_H_AHI, LOW);
+    digitalWriteFast(PIN_H_BHI, LOW);
+    bitSet(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
-    bitClear(TCCR1A, COM1B0);  // Compare Match PWM 9
+    bitSet(TCCR1A, COM1B0);  // Compare Match PWM 9
     bitSet(TCCR1A, COM1B1);
   #endif
 
@@ -241,8 +251,8 @@ ISR(TIMER1_OVF_vect) {
   outputWave.osgUpdate(0, 0);
 
   #ifdef UNIPOL
-    //complementary sin wave drive of both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
-    //(see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
+    // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
+    // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
     pdac_out = outputWave.rcos + 0x1FF; //make unsigned, 10 bit range
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
     pdac_out += ICR1_OFFSET; // add offset to center between the BOTTOM to TOP value range of the timer.
@@ -250,37 +260,38 @@ ISR(TIMER1_OVF_vect) {
     // write to PWM output registers A&B (10bit).
     OCR1AH = pdac_out>>8; //MSB
     OCR1AL = pdac_out; //LSB
-    //inverted output channel (dead-time generation inside the H-bridge driver HIP4082):
+    //inverted output channel (dead-time correction inside the H-bridge driver HIP4082):
     OCR1BH = ndac_out>>8; //MSB
     OCR1BL = ndac_out; //LSB
   #endif
 
   #ifdef BIPOL
-      dac_out = outputWave.rcos;
-      // complementary gate drive for top and bottom FET's. H-leg switching is done with the AHI, BHI signals.
-      // write magnitude data to PWM output registers A&B (10bit).
-      dac_out += 0x1FF;
-      dac_out += ICR1_OFFSET;
-        OCR1AH = dac_out >> 8; // top 8 bits
-        OCR1AL = dac_out; //bottom 8 bits
-        OCR1BH = OCR1AH;  //low side of H-bridge
-        OCR1BL = OCR1AL;
+    dac_out = outputWave.rcos;
+    // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
+    dac_out += 0x1FF;
+    dac_out += ICR1_OFFSET;
+    OCR1AH = dac_out >> 8; // top 8 bits
+    OCR1AL = dac_out; //bottom 8 bits
+    OCR1BH = OCR1AH;  //Signal inverted with the output compare setting above.
+    OCR1BL = OCR1AL;
   #endif
 
-  #ifdef HYBRID // Not working! Control lines AHI, BHI not controlled yet...
-      dac_out = outputWave.rcos;
+  #ifdef HYBRID // LF+PWM dive. Not optimal yet... Reference wave should be half wave with 10bit or more amplitude range.
+    dac_out = outputWave.rcos;
     // write magnitude data to PWM output registers A&B (10bit).
-    if (dac_out >=0) {
-      OCR1AH = dac_out >> 8; // top 8 bits
+    if (dac_out >= 0) {
+      digitalWriteFast(PIN_H_AHI, LOW);
+      digitalWriteFast(PIN_H_BHI, HIGH);
+      dac_out = dac_out<<1; //times 2
+      OCR1AH = dac_out>>8; // top 8 bits
       OCR1AL = dac_out; // bottom 8 bits
-      OCR1BH = 0xFF; // low side of H-bridge is low frequency switched
-      OCR1BL = 0xFF;
     }
     else {
-      OCR1AH = dac_out >> 8; // top 8 bits
-      OCR1AL = dac_out; // bottom 8 bits
-      OCR1BH = 0xFF;
-      OCR1BL = 0xFF;
+     digitalWriteFast(PIN_H_BHI, LOW);
+     digitalWriteFast(PIN_H_AHI, HIGH);
+     dac_out = (-dac_out)<<1; //times 2
+     OCR1BH = dac_out>>8; // top 8 bits
+     OCR1BL = dac_out; // bottom 8 bits
     }
   #endif
 }
