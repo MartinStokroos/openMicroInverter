@@ -1,5 +1,7 @@
 # PowerSys Library
-This library contains modules used to control power convertersl. One of the basic functions of the library is generating the reference waveform. The generator is based on Direct Digital Synthesis and has special features to keep it in sync with the grid voltage.
+This library contains modules used to control power converter. One of the basic functions of the library is generating the reference waveform. The generator is based on Direct Digital Synthesis and has special features to keep it in sync with the grid voltage.
+
+Library is under construction...
 
 #
 
