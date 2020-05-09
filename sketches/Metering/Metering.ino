@@ -2,8 +2,9 @@
  *
  * File: Metering.ino
  * Purpose: openMicroInverter example project demonstrating power and energy metering.
- * Version: 1.0.1
- * Date: 07-11-2019
+ * Version: 1.0.2
+ * Date: 09-05-2020
+ * Release date: 07-11-2019
  * 
  * URL: https://github.com/MartinStokroos/openMicroInverter
  * 
@@ -124,13 +125,13 @@ void loop(){
 	gridVolt.publish();
 	acPower.publish();
 
-  if(pubIdx <= 0){
+  if(pubIdx <= 0) {
     publish=true;
     pubIdx=10; //print every 0.5s.
   }
 
     if(publish){
-		switch (printMuxIdx){
+		switch (printMuxIdx) {
     		case 0:
     			Serial.print(gridVolt.rmsVal, 1); // grid voltage
     			Serial.print(", ");
@@ -159,7 +160,7 @@ void loop(){
           Serial.print(acPower.energy/3600, 2);
     		break;
 		}
-		if(printMuxIdx==6){
+		if(printMuxIdx==6) {
 			Serial.println();
 			printMuxIdx=0;
 			publish=false;
@@ -183,7 +184,7 @@ void loop(){
 /* ******************************************************************
 * ADC ISR. The ADC is triggered by Timer1.
 * *******************************************************************/
-ISR(ADC_vect){
+ISR(ADC_vect) {
   digitalWriteFast(PIN_DEBUG, HIGH);  // checking ADC sampling frequency and the execution time.
 
   // read the current ADC input channel
@@ -191,28 +192,28 @@ ISR(ADC_vect){
   adcVal+=ADCH<<8; // store high byte
 
   switch (adcMuxIdx) {
-    case 0:  // proces the grid voltage sample
+    case 0:  // sample the grid voltage
     	gridVolt.update(adcVal);
     break;
 
-    case 1: // process the inverter current sample
+    case 1: // sample the inverter current
       acPower.update1(adcVal);
     break;
 
-    case 2: // process the inverter voltage sample
+    case 2: // sample the inverter voltage
       acPower.update2(adcVal);
     break;
 
     case 3: 
-      // process the battery current
-   	break;
+      // slot 3
+    break;
 
     case 4:
-      // process the battery voltage
+      // slot 4
     break;
 
     case 5:
-      // optional channel
+      // slot 5
     break;
   }
 
@@ -220,7 +221,7 @@ ISR(ADC_vect){
   if (adcMuxIdx > 5){
     adcMuxIdx = 0;
   }
-  ADMUX = (ADMUX & B11110000) | adcMuxIdx;   //set the ADC MUX-channel for the next run.
+  ADMUX = (ADMUX & B11110000) | adcMuxIdx;   // set the ADC MUX-channel for the next run.
 
   digitalWriteFast(PIN_DEBUG, LOW); //pin low
 } // runtime about 90us max.
