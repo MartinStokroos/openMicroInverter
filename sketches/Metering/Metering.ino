@@ -33,7 +33,7 @@
 //#define RMS_WINDOW 50   // rms window of 50 samples, means 6 periods @60Hz
 
 //scaling of measured quantities
-const int gridVoltRange = 660.0; //Vpeak-to-peak full scale.
+const float gridVoltRange = 660.0; //Vpeak-to-peak full scale.
 const float voltRange = 660.0; //Vpeak-to-peak full scale.
 const float currRange = 4.5; //Apeak-to-peak full scale.
 
