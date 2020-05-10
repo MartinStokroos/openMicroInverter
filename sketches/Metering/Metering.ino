@@ -2,8 +2,8 @@
  *
  * File: Metering.ino
  * Purpose: openMicroInverter example project demonstrating power and energy metering.
- * Version: 1.0.2
- * Date: 09-05-2020
+ * Version: 1.0.3
+ * Date: 10-05-2020
  * Release date: 07-11-2019
  * 
  * URL: https://github.com/MartinStokroos/openMicroInverter
