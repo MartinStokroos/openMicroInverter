@@ -2,7 +2,7 @@
 ### An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and grid tie inverters.
 
 ### What is the openMicroInverter?
-The *openMicroInverter*, or short *oμI*, is an **Arduino-UNO based** DC-to-AC power converter. The *oμI* platform is meant for doing experiments with power electronics and energy systems. The *oμI* is intended to work as:
+The *openMicroInverter*, or short *oμiv*, is an **Arduino-UNO based** DC-to-AC power converter. The *oμiv* platform is meant for doing experiments with power electronics and energy systems. The *oμiv* is intended to work as:
 
 1. DC-to-AC power inverter for off the grid applications,
 2. AC power meter and energy metering device,
@@ -15,10 +15,10 @@ Why then using the 8-bit Arduino-UNO? Just because it is fun to squeeze the most
 This is work in progress...
 
 ### How does it work?
-The converter topology of the *oμI* is a single-phase, single-step, transformer coupled power converter with a full-bridge inverter. This type of converter is not as efficient as the combination of a high frequency switching boost converter with DC-to-AC converter, but the *oμI* is simple to build and it is relatively safe to operate.
+The converter topology of the *oμiv* is a single-phase, single-step, transformer coupled power converter with a full-bridge inverter. This type of converter is not as efficient as the combination of a high frequency switching boost converter with DC-to-AC converter, but the *oμiv* is simple to build and it is relatively safe to operate.
 
 ### The Hardware
-There are two versions of the hardware. The first design is the development model and second design is the final design of the *oμI* platform. The development model has been used for the development of the software. Please refer to the schematic diagrams to understand further explanation.
+There are two versions of the hardware. The first design is the development model and second design is the final design of the *oμiv* platform. The development model has been used for the development of the software. Please refer to the schematic diagrams to understand further explanation.
 
 **The openMicroInverter development hardware**
 A rapid prototype of the inverter was realized for doing software development. The schematic of the development model is named *openMicroInverter_dev.pdf*.
@@ -27,7 +27,7 @@ A somewhat older H-bridge driver, the HIP4082, is used for the design. The HIP40
 To be continued...
 
 **The openMicroInverter hardware**
-The *oμI* is designed as a single PCB module and is build with low-cost components.
+The *oμiv* is designed as a single PCB module and is build with low-cost components.
  
 This is work in progress...
 
@@ -50,7 +50,7 @@ D7 | input | analog comparator input (AIN1) for zero-cross detection (ZCD) of th
 D13 | output | Arduino LED (*PLL-locking* indicator)
 
 **Software timing scheme**
-The standard Arduino library functions like *analogRead, analogWrite* and *digitalWrite* are very time consuming and can not be used with the *oμI*. The software requirements are:
+The standard Arduino library functions like *analogRead, analogWrite* and *digitalWrite* are very time consuming and can not be used with the *oμiv*. The software requirements are:
 
 * The PWM frequency to steer the H-bridge must be chosen as high as possible.
 * The ADC sampling frequency must be a multiple of 50Hz for stable RMS readings.

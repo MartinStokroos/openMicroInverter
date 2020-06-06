@@ -38,7 +38,7 @@ const int gridVoltRange = 660.0; //Vpeak-to-peak full scale.
 Rms2 gridVolt; // create instance of Rms
 volatile int adcValue;
 volatile int adcMuxIdx = 0;  // multiplexer index
-volatile bool sign = LOW;   // current sign of input wave; 0=neg, 1=pos
+volatile bool sign = LOW;   // sign of input wave; 0=neg, 1=pos
 
 
 // ******************************************************************
@@ -65,8 +65,8 @@ void setup(){
   bitSet(ADCSRA, ADEN); // AD-converter enabled
   bitSet(ADCSRA, ADATE);  // auto-trigger enabled
   bitSet(ADCSRA, ADIE); // ADC interrupt enabled
-  bitSet(ADCSRA, ADPS0);  // ADC clock prescaler set to 32 (500kHz). We'll lose some accuracy...
-  bitClear(ADCSRA, ADPS1);
+  bitClear(ADCSRA, ADPS0); // ADC clock prescaler set to 64 (250kHz). We'll lose some accuracy...
+  bitSet(ADCSRA, ADPS1);
   bitSet(ADCSRA, ADPS2);
   bitClear(ADCSRB, ACME); // Analog Comparator (ADC)Multiplexer enable OFF
   bitClear(ADCSRB, ADTS0);  // select trigger from timer 1
