@@ -50,7 +50,7 @@ volatile int adcMuxIdx = 0;  // multiplexer index
 volatile bool sign = LOW;   // current sign of input wave; 0=neg, 1=pos
 
 //scaling calibration
-const float outputVoltRange = 230.0; //Vp-p full scale.
+const float outputVoltRange = 460.0; //Vp-p full scale.
 const float outputCurrRange = 5.0; //Ap-p full scale.
 const float vBattRange = 12.0; //Vbatt max, temporary used for magnitude control.
 const float iBattRange = 10.00;
@@ -69,7 +69,7 @@ Power2 inverterPower;
 Average vBatt;
 Average iBatt;
 PowerControl outputWave;
-const int surnecoVoltRange = 230.0; //Vpeak-to-peak full scale.
+const int surnecoVoltRange = 460.0; //Vpeak-to-peak full scale.
 Rms2 surnecoVolt; //from the grid
 unsigned long nextLoop;
 //unsigned long nextLoop;
@@ -170,10 +170,12 @@ void setup() {
   vBatt.begin(vBattRange, RMS_WINDOW, ADC_10BIT, CNT_SCAN);
   iBatt.begin(iBattRange, RMS_WINDOW, ADC_10BIT, CNT_SCAN);
 
-  surnecoVolt.start();
-  inverterPower.start();
-  vBatt.start();
-  iBatt.start();
+  surnecoVolt.start(); // this would be the grid volts. this means A0 
+  inverterPower.start();  // this would be the output current of inverter. A1 
+                          // this would be the inverter volts. this means A2 
+  vBatt.start(); // this would be the current battery. this means A3
+  iBatt.start();  // this would be the current battery volts. this means A4
+   
 
 
 
@@ -356,8 +358,8 @@ ISR(ADC_vect) {
 *********************************************************************/
 ISR(TIMER1_OVF_vect) {
   // generate the reference sin wave with DDS.
+//  outputWave.osgUpdate(0, PHASE_OFFS_240);
   outputWave.osgUpdate(0, 0);
-
 #ifdef UNIPOL
   // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
   // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
