@@ -80,8 +80,8 @@ Scheme | Description | Remarks
 **The *PowerSys* Library**
 Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Library.
 
-**Software Status**
-1. Work is done on an inverter example that syncs to the grid (but still not connects to the grid, only in a controlled experimental setting). 
+**Current Software Status**
+1. Work is done on an inverter example that syncs to the grid, but still not connects to the grid (only in a very controlled experimental setting).
 2. The plan is to increase the effective duty-cycle range in hybrid-mode by using the AHI and BHI control signals to the HIP-4082.
 
 ### Example Sketches
