@@ -1,5 +1,5 @@
 # openMicroInverter ![ Fig. 0.](figures/oshw-logo-100-px.png  "oshw logo.")
-### An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and possible grid tie inverters.
+### An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and (possibly) grid tie inverters.
 
 ### What is the openMicroInverter?
 The *openMicroInverter*, or short *oμiv*, is an **Arduino-UNO based** DC-to-AC power converter. The *oμiv* platform is meant for doing experiments with power electronics and energy systems. The *oμiv* is intended to work as:
