@@ -36,18 +36,22 @@ Arduino-UNO Pin-out:
 
 Pin | In/Out | Function
 --- | ------ | --------
-A0 | input | scaled ac mains voltage biased on 2.5V DC. Full scale represented voltage is about 700Vpp (peak-to-peak).
-A1 | input | scaled ac inverter current biased on 2.5V DC. Full scale represented current is about 5App.
-A2 | input | scaled ac inverter voltage biased on 2.5V DC. Full scale represented voltage is about 700Vpp.
-A3 | input | scaled battery current biased on 2.5V DC. Full scale current is .. A.
-A4 | input | scaled battery voltage. Full scale voltage is .. V.
-A5 | input | (optional)
-D2 | output | grid connect relay
+A0 | input | scaled ac mains voltage biased on 2.5V DC.
+A1 | input | scaled ac inverter current biased on 2.5V DC.
+A2 | input | scaled ac inverter voltage biased on 2.5V DC.
+A3 | input | scaled battery current biased on 2.5V DC.
+A4 | input | scaled battery voltage input.
+A5 | input | (optional analog input)
+D2 | output | islanding relay (future function)
+D3 | output | AHI control signal to HIP4082 H-bridge driver
 D4 | output | debug output pin
 D6 | input | external reference voltage input of the analog comparator (ZCD).
 D8 | output | inverter enable output (a high=ON)
+D9 | output | PWMB signal to HIP4082 H-bridge driver
+D10 | output | PWMA signal to HIP4082 H-bridge driver
 D7 | input | analog comparator input (AIN1) for zero-cross detection (ZCD) of the grid voltage. The analog comparator input is connected in parallel with A0.
-D13 | output | Arduino LED (*PLL-locking* indicator)
+D11 | output | BHI control signal to HIP4082 H-bridge driver
+D13 | output | Arduino LED (future *PLL-lock* indicator)
 
 **Software timing scheme**
 The standard Arduino library functions like *analogRead, analogWrite* and *digitalWrite* are very time consuming and can not be used with the *oμiv*. The software requirements are:
@@ -56,7 +60,7 @@ The standard Arduino library functions like *analogRead, analogWrite* and *digit
 * The ADC sampling frequency must be a multiple of 50Hz for stable RMS readings.
 * If possible, the ADC should be synchronized to the timer used for the PWM generation to force the sampling to happen inbetween the switching transients.
 * The PWM duty-cycle is limited by the hardware and can only be used up to about 90%. This is because of the charge pumps from the hi-side FET drivers of the HIP-4082 full-bridge driver. The dynamic range for control is limited in particular when using a 8-bit timer.
-* TIM0 should not be used to keep the Arduino time and delay functions working. These functions might be used later in the program main loop.
+* TIM0 should not be used to keep the Arduino time and delay functions working. The Arduino time functions can still be used in the program main loop.
 
 Different schemes are are now being investigated to fit it all inside the Arduino and are::
 
@@ -77,14 +81,14 @@ Scheme | Description | Remarks
 Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Library.
 
 **Software Status**
-1. I am working on an inverter example that syncs to the grid (but still not connects to the grid). 
-2. My plan is to implement a half sinewave look-up table and using the AHI, BHI control signals of the HIP-4082 to double the amplitude resoltution.
+1. Work is done on an inverter example that syncs to the grid (but still not connects to the grid, only in a controlled experimental setting). 
+2. The plan is to increase the effective duty-cycle range in hybrid-mode by using the AHI and BHI control signals to the HIP-4082.
 
 ### Example Sketches
-*Inverter1.ino* - Sketch to evaluate the different ways of gating the H-bridge to generate a sine wave output. This sketch works for the *openMicroInverter_dev* hardware. The inverter works in voltage-mode without output voltage control (open loop). The timing is according scheme 1, which gives stable readings of the measurements but the switching frequency is a little low and the duty-cycle range is limited between 12% and 88%
+*Inverter1.ino* - Sketch to evaluate the different ways of gating the H-bridge to generate a sine wave output. This sketch works for the *openMicroInverter_dev* hardware. The inverter works in voltage-mode without output voltage control (open loop). The timing is according scheme 1, which gives stable readings of the measurements but the switching frequency is on the low side and the duty-cycle range is limited between 12% and 88%. bi-polar switching runs most smoothly.
 
 *Metering.ino* - This sketch is a power meter and energy metering example that works for the *openMicroInverter_dev* hardware.
-This sketch uses a time base on interrupt basis and uses an ADC multiplexer running at 6kHz (120*50Hz). Each ADC-channel samples at 1kHz. This example works without inverter part (H-bridge + transformer and output filter). Re-wire the circuit such that A0 and A2 measure the AC-voltage and A1 the load current. The power is calculated from inputs A1 and A2.
+This sketch uses a time base on interrupt basis and uses an ADC multiplexer running at 6kHz (120*50Hz). Each ADC-channel samples at 1kHz. This example is without inverter drive (H-bridge + transformer and output filter). Re-wire the circuit such that A0 and A2 measure the AC-voltage and A1 the load current. The power is calculated from inputs A1 and A2.
 
 *ZeroCrossingDetector* - This example demonstrates Zero Crossing Detection (ZCD) with the analog comparator of the ATMEGA328. The comparator interrupts on output toggle. The sign of the sine wave is determined from the ADC input. The output of the ZCD only toggles from high to low when the sign of the AC input is positive and vice verse.
 
