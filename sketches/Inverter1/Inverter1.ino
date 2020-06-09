@@ -1,8 +1,9 @@
 /*
- * File: Inverter.ino
+ * File: Inverter1.ino
  * Purpose: openMicroInverter example project. This sketch establishes a voltage-mode inverter without output voltage control (open loop).
- * Version: 1.0.1
- * Date: 02-12-2019
+ * Version: 1.0.2
+ * Release date: 02-12-2019
+ * Last update: 09-06-2020
  *
  * URL: https://github.com/MartinStokroos/openMicroInverter
  *
@@ -17,18 +18,18 @@
  */
 
 #include <digitalWriteFast.h>  // library for high performance digital reads and writes by jrraines
-                // see http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1267553811/0
-                // and http://code.google.com/p/digitalwritefast/
+                               // see http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1267553811/0
+                               // and http://code.google.com/p/digitalwritefast/
 
 #include <TrueRMS.h> // https://github.com/MartinStokroos/TrueRMS
 #include <PowerSys.h> // https://github.com/MartinStokroos/openMicroInverter
 
-// switching mode:
-//#define UNIPOL    // unipolar switching
-#define BIPOL   // bipolar switching
+// H-bridge switching mode:
+#define UNIPOL    // unipolar switching
+//#define BIPOL   // bipolar switching
 //#define HYBRID  // bipolar switching, bottom H-bridge=LF
 
-#define LPERIOD 1000000    // loop period time in us. In this case 1s.
+#define LPPERIOD 1000000    // main loop period time in us. In this case 1s.
 #define RMSWINDOW 20 // RMS window, number of samples used for the RMS calculation.
 
 #define PIN_LED 13    // PLL locking status indicator LED
@@ -43,8 +44,8 @@
 //scaling calibration
 const float outputVoltRange = 660.0; //Vp-p full scale.
 const float outputCurrRange = 4.5; //Ap-p full scale.
-const float vBattRange = 1.00; //Vbatt max, temporary used for magnitude control.
-const float iBattRange = 10.00;
+const float vBattRange = 5.00; //Vbatt max, not scaled yet.
+const float iBattRange = 5.00; //Ibatt, not scaled yet.
 
 // ADC vars
 volatile int adcVal;
@@ -60,7 +61,7 @@ const float TD = 1/6000.0; //time step for f=6000 Hz
 const float f0 = 50.0; // output frequency in Hz
 
 // define instances for ac/dc voltage, current and power metering and DDS
-Power2 outputMeas;
+Power2 outputMeasurements;
 Average vBatt;
 Average iBatt;
 PowerControl outputWave;
@@ -154,17 +155,16 @@ void setup(){
   // enable timer compare interrupt
   bitSet(TIMSK1, TOIE1); // enable Timer1 Interrupt
 
-  outputMeas.begin(outputCurrRange, outputVoltRange, RMSWINDOW, ADC_10BIT, BLR_ON, CNT_SCAN);
+  outputMeasurements.begin(outputCurrRange, outputVoltRange, RMSWINDOW, ADC_10BIT, BLR_ON, CNT_SCAN);
   vBatt.begin(vBattRange, RMSWINDOW, ADC_10BIT, CNT_SCAN);
   iBatt.begin(iBattRange, RMSWINDOW, ADC_10BIT, CNT_SCAN);
-  outputMeas.start();
+  outputMeasurements.start();
   vBatt.start();
   iBatt.start();
-
-  outputWave.osgBegin(f0, TD); // initilize the DDS (frequency, startphase, update period time)
+  outputWave.osgBegin(f0, TD); // initilize the DDS (frequency, startphase, timestep)
 
   sei(); // enable interrupts
-  nextLoop = micros() + LPERIOD; // Set the loop timer variable for the next loop interval.
+  nextLoop = micros() + LPPERIOD; // Set the loop timer variable for the next loop interval.
 }
 
 
@@ -177,22 +177,24 @@ void loop(){
   digitalWriteFast(PIN_LED, HIGH);
   vBatt.publish();
   iBatt.publish();
-  outputMeas.publish();
-  Serial.print(outputMeas.rmsVal2, 1); // print the RMS output voltage
+  outputMeasurements.publish();
+  
+  Serial.print(outputMeasurements.rmsVal2, 1); // print the RMS output voltage
   Serial.print(", ");
-  Serial.print(outputMeas.rmsVal1, 1); // print the RMS output current
+  Serial.print(outputMeasurements.rmsVal1, 1); // print the RMS output current
   Serial.print(", ");
-  Serial.print(outputMeas.apparentPwr, 0); // print the RMS output VA's
+  Serial.print(outputMeasurements.apparentPwr, 0); // print power output VA's
   Serial.print(", ");
-  Serial.print(outputMeas.realPwr, 0); // print the RMS output Watts
+  Serial.print(outputMeasurements.realPwr, 0); // print power output Watts
   Serial.print(", ");
   Serial.print(vBatt.average, 1);
   Serial.print(", ");
   Serial.println(iBatt.average, 1);
 
-  while(nextLoop > micros());  // wait until the end of the time interval
-  nextLoop += LPERIOD;  // set next loop time at current time + LOOP_PERIOD
   digitalWriteFast(PIN_LED, LOW);
+  
+  while(nextLoop > micros()) {;}  // wait until the end of the time interval
+  nextLoop += LPPERIOD;  // set next loop time at current time + LOOP_PERIOD
 }
 
 
@@ -208,26 +210,31 @@ ISR(ADC_vect){
   adcVal+=ADCH<<8; // store high byte
   switch (adcMuxIdx) {
     case 0:
-      //sample the grid voltage
+      //time slot for sampling the grid voltage (future)
     break;
 
-    case 1: //sample the inverter current
-      //outputMeas.update1(adcVal);
+    case 1:
+      //time slot for sampling the inverter current
+      outputMeasurements.update1(adcVal);
     break;
 
-    case 2: //sample the inverter voltage
-      //outputMeas.update2(adcVal);
+    case 2:
+      //time slot for sampling the inverter voltage
+      outputMeasurements.update2(adcVal);
     break;
 
-    case 3: // sample the battery current
-      //iBatt.update(adcVal);
+    case 3: 
+      // time slot for sampling the battery current
+      iBatt.update(adcVal);
     break;
 
-    case 4: //sample the battery voltage
-      //vBatt.update(adcVal);
+    case 4:
+      // time slot for sampling the battery voltage
+      vBatt.update(adcVal);
     break;
 
     case 5:
+      // optional time slot
     break;
     // default:
   }
