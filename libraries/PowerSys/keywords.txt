@@ -6,17 +6,20 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-Pll			KEYWORD1
-Park			KEYWORD1
-iPark			KEYWORD1
+PowerControl		KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-begin			KEYWORD2
-update			KEYWORD2
-publish			KEYWORD2
+osgBegin		KEYWORD2
+osgUpdate1		KEYWORD2
+osgUpdate2		KEYWORD2
+osgUpdate3		KEYWORD2
+osgUpdate4		KEYWORD2
+osgUpdate5		KEYWORD2
+park			KEYWORD2
+ipark			KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

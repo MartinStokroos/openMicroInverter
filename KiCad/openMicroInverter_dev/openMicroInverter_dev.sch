@@ -5,8 +5,8 @@ $Descr A2 23386 16535
 encoding utf-8
 Sheet 1 1
 Title "open Micro Inverter with Arduino - development model"
-Date "2020-06-09"
-Rev "1.1"
+Date "2020-06-11"
+Rev "1.2"
 Comp ""
 Comment1 "Design by: M. Stokroos"
 Comment2 ""
@@ -90,8 +90,6 @@ F 3 "" H 7600 4100 50  0000 C CNN
 	1    7600 4100
 	-1   0    0    -1  
 $EndComp
-Text Label 7800 3400 2    60   ~ 0
-AHS
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R3
 U 1 1 56D7517F
@@ -136,9 +134,9 @@ F 3 "" H 8050 4100 50  0000 C CNN
 	1    8050 4100
 	0    1    1    0   
 $EndComp
-Text Label 8200 3000 2    60   ~ 0
+Text Label 8500 3000 2    60   ~ 0
 AHO
-Text Label 8200 4100 2    60   ~ 0
+Text Label 8500 4100 2    60   ~ 0
 ALO
 Text Label 4050 4000 2    60   ~ 0
 AHS
@@ -168,32 +166,32 @@ F 3 "" H 4300 4200 50  0000 C CNN
 	1    4300 4200
 	1    0    0    -1  
 $EndComp
-Text Label 6300 3600 2    60   ~ 0
+Text Label 6500 3500 2    60   ~ 0
 OUT_A
-Text Label 7200 3600 0    60   ~ 0
+Text Label 7000 3500 0    60   ~ 0
 OUT_B
 Text Label 5200 2000 0    60   ~ 0
 P12V0
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R22
 U 1 1 56D75185
-P 3600 6900
-F 0 "R22" V 3680 6900 50  0000 C CNN
-F 1 "22K" V 3600 6900 50  0000 C CNN
-F 2 "" V 3530 6900 50  0000 C CNN
-F 3 "" H 3600 6900 50  0000 C CNN
-	1    3600 6900
+P 3350 6900
+F 0 "R22" V 3430 6900 50  0000 C CNN
+F 1 "22K" V 3350 6900 50  0000 C CNN
+F 2 "" V 3280 6900 50  0000 C CNN
+F 3 "" H 3350 6900 50  0000 C CNN
+	1    3350 6900
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R24
 U 1 1 56D75186
-P 3600 7100
-F 0 "R24" V 3680 7100 50  0000 C CNN
-F 1 "1K" V 3600 7100 50  0000 C CNN
-F 2 "" V 3530 7100 50  0000 C CNN
-F 3 "" H 3600 7100 50  0000 C CNN
-	1    3600 7100
+P 3350 7100
+F 0 "R24" V 3430 7100 50  0000 C CNN
+F 1 "1K" V 3350 7100 50  0000 C CNN
+F 2 "" V 3280 7100 50  0000 C CNN
+F 3 "" H 3350 7100 50  0000 C CNN
+	1    3350 7100
 	0    1    1    0   
 $EndComp
 $Comp
@@ -210,34 +208,34 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R20
 U 1 1 56D75188
-P 4300 6300
-F 0 "R20" V 4380 6300 50  0000 C CNN
-F 1 "22K" V 4300 6300 50  0000 C CNN
-F 2 "" V 4230 6300 50  0000 C CNN
-F 3 "" H 4300 6300 50  0000 C CNN
-	1    4300 6300
+P 4450 6000
+F 0 "R20" V 4530 6000 50  0000 C CNN
+F 1 "22K" V 4450 6000 50  0000 C CNN
+F 2 "" V 4380 6000 50  0000 C CNN
+F 3 "" H 4450 6000 50  0000 C CNN
+	1    4450 6000
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R23
 U 1 1 56D75189
-P 5250 7000
-F 0 "R23" V 5330 7000 50  0000 C CNN
-F 1 "220" V 5250 7000 50  0000 C CNN
-F 2 "" V 5180 7000 50  0000 C CNN
-F 3 "" H 5250 7000 50  0000 C CNN
-	1    5250 7000
+P 5500 7000
+F 0 "R23" V 5580 7000 50  0000 C CNN
+F 1 "220" V 5500 7000 50  0000 C CNN
+F 2 "" V 5430 7000 50  0000 C CNN
+F 3 "" H 5500 7000 50  0000 C CNN
+	1    5500 7000
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:C-SmartInverter_proto-rescue C9
 U 1 1 56D7518A
-P 4450 6000
-F 0 "C9" V 4250 5950 50  0000 L CNN
-F 1 "1n5" V 4350 6100 50  0000 L CNN
-F 2 "" H 4488 5850 50  0000 C CNN
-F 3 "" H 4450 6000 50  0000 C CNN
-	1    4450 6000
+P 4450 5700
+F 0 "C9" V 4250 5650 50  0000 L CNN
+F 1 "10n" V 4350 5800 50  0000 L CNN
+F 2 "" H 4488 5550 50  0000 C CNN
+F 3 "" H 4450 5700 50  0000 C CNN
+	1    4450 5700
 	0    1    1    0   
 $EndComp
 $Comp
@@ -324,12 +322,12 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:D-SmartInverter_proto-rescue D2
 U 1 1 56D75192
-P 17200 3400
-F 0 "D2" H 17200 3500 50  0000 C CNN
-F 1 "D" H 17200 3300 50  0000 C CNN
-F 2 "" H 17200 3400 50  0000 C CNN
-F 3 "" H 17200 3400 50  0000 C CNN
-	1    17200 3400
+P 17200 3500
+F 0 "D2" H 17200 3600 50  0000 C CNN
+F 1 "D" H 17200 3400 50  0000 C CNN
+F 2 "" H 17200 3500 50  0000 C CNN
+F 3 "" H 17200 3500 50  0000 C CNN
+	1    17200 3500
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -530,7 +528,7 @@ F 3 "" H 4900 2600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 11500 2000 0    60   ~ 0
-VBATT+
+VDC+
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R29
 U 1 1 56D751A4
@@ -556,34 +554,34 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R28
 U 1 1 56D751A6
-P 4300 9000
-F 0 "R28" V 4380 9000 50  0000 C CNN
-F 1 "22K" V 4300 9000 50  0000 C CNN
-F 2 "" V 4230 9000 50  0000 C CNN
-F 3 "" H 4300 9000 50  0000 C CNN
-	1    4300 9000
+P 4400 9100
+F 0 "R28" V 4480 9100 50  0000 C CNN
+F 1 "22K" V 4400 9100 50  0000 C CNN
+F 2 "" V 4330 9100 50  0000 C CNN
+F 3 "" H 4400 9100 50  0000 C CNN
+	1    4400 9100
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R30
 U 1 1 56D751A7
-P 5250 9700
-F 0 "R30" V 5330 9700 50  0000 C CNN
-F 1 "220" V 5250 9700 50  0000 C CNN
-F 2 "" V 5180 9700 50  0000 C CNN
-F 3 "" H 5250 9700 50  0000 C CNN
-	1    5250 9700
+P 5500 9700
+F 0 "R30" V 5580 9700 50  0000 C CNN
+F 1 "220" V 5500 9700 50  0000 C CNN
+F 2 "" V 5430 9700 50  0000 C CNN
+F 3 "" H 5500 9700 50  0000 C CNN
+	1    5500 9700
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:C-SmartInverter_proto-rescue C19
 U 1 1 56D751A8
-P 4300 8800
-F 0 "C19" V 4100 8750 50  0000 L CNN
-F 1 "1n5" V 4200 8900 50  0000 L CNN
-F 2 "" H 4338 8650 50  0000 C CNN
-F 3 "" H 4300 8800 50  0000 C CNN
-	1    4300 8800
+P 4400 8800
+F 0 "C19" V 4200 8750 50  0000 L CNN
+F 1 "1n5" V 4300 8900 50  0000 L CNN
+F 2 "" H 4438 8650 50  0000 C CNN
+F 3 "" H 4400 8800 50  0000 C CNN
+	1    4400 8800
 	0    1    1    0   
 $EndComp
 $Comp
@@ -611,34 +609,34 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R37
 U 1 1 56D751AB
-P 4300 11500
-F 0 "R37" V 4380 11500 50  0000 C CNN
-F 1 "22K" V 4300 11500 50  0000 C CNN
-F 2 "" V 4230 11500 50  0000 C CNN
-F 3 "" H 4300 11500 50  0000 C CNN
-	1    4300 11500
+P 4400 11600
+F 0 "R37" V 4480 11600 50  0000 C CNN
+F 1 "22K" V 4400 11600 50  0000 C CNN
+F 2 "" V 4330 11600 50  0000 C CNN
+F 3 "" H 4400 11600 50  0000 C CNN
+	1    4400 11600
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R39
 U 1 1 56D751AC
-P 5250 12200
-F 0 "R39" V 5330 12200 50  0000 C CNN
-F 1 "220" V 5250 12200 50  0000 C CNN
-F 2 "" V 5180 12200 50  0000 C CNN
-F 3 "" H 5250 12200 50  0000 C CNN
-	1    5250 12200
+P 5500 12200
+F 0 "R39" V 5580 12200 50  0000 C CNN
+F 1 "220" V 5500 12200 50  0000 C CNN
+F 2 "" V 5430 12200 50  0000 C CNN
+F 3 "" H 5500 12200 50  0000 C CNN
+	1    5500 12200
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:C-SmartInverter_proto-rescue C21
 U 1 1 56D751AD
-P 4300 11300
-F 0 "C21" V 4100 11250 50  0000 L CNN
-F 1 "1n5" V 4200 11400 50  0000 L CNN
-F 2 "" H 4338 11150 50  0000 C CNN
-F 3 "" H 4300 11300 50  0000 C CNN
-	1    4300 11300
+P 4400 11300
+F 0 "C21" V 4200 11250 50  0000 L CNN
+F 1 "1n5" V 4300 11400 50  0000 L CNN
+F 2 "" H 4438 11150 50  0000 C CNN
+F 3 "" H 4400 11300 50  0000 C CNN
+	1    4400 11300
 	0    1    1    0   
 $EndComp
 $Comp
@@ -666,42 +664,42 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R44
 U 1 1 56D751B0
-P 4300 14000
-F 0 "R44" V 4380 14000 50  0000 C CNN
-F 1 "22K" V 4300 14000 50  0000 C CNN
-F 2 "" V 4230 14000 50  0000 C CNN
-F 3 "" H 4300 14000 50  0000 C CNN
-	1    4300 14000
+P 4400 14100
+F 0 "R44" V 4480 14100 50  0000 C CNN
+F 1 "22K" V 4400 14100 50  0000 C CNN
+F 2 "" V 4330 14100 50  0000 C CNN
+F 3 "" H 4400 14100 50  0000 C CNN
+	1    4400 14100
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R47
 U 1 1 56D751B1
-P 5250 14700
-F 0 "R47" V 5330 14700 50  0000 C CNN
-F 1 "220" V 5250 14700 50  0000 C CNN
-F 2 "" V 5180 14700 50  0000 C CNN
-F 3 "" H 5250 14700 50  0000 C CNN
-	1    5250 14700
+P 5500 14700
+F 0 "R47" V 5580 14700 50  0000 C CNN
+F 1 "220" V 5500 14700 50  0000 C CNN
+F 2 "" V 5430 14700 50  0000 C CNN
+F 3 "" H 5500 14700 50  0000 C CNN
+	1    5500 14700
 	0    1    1    0   
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:C-SmartInverter_proto-rescue C22
 U 1 1 56D751B2
-P 4300 13800
-F 0 "C22" V 4100 13800 50  0000 L CNN
-F 1 "1n5" V 4200 13900 50  0000 L CNN
-F 2 "" H 4338 13650 50  0000 C CNN
-F 3 "" H 4300 13800 50  0000 C CNN
-	1    4300 13800
+P 4400 13800
+F 0 "C22" V 4200 13800 50  0000 L CNN
+F 1 "1n5" V 4300 13900 50  0000 L CNN
+F 2 "" H 4438 13650 50  0000 C CNN
+F 3 "" H 4400 13800 50  0000 C CNN
+	1    4400 13800
 	0    1    1    0   
 $EndComp
 Text Label 13700 3500 0    60   ~ 0
-Vline_scaled
+Vgrid_sense
 Text Label 18000 3500 0    60   ~ 0
-Iinv_scaled
+Iinv_sense
 Text Label 22600 4700 2    60   ~ 0
-Vinv_scaled
+Vinv_sense
 $Comp
 L openMicroInverter_dev-rescue:LEM_LA55-P-SmartInverter_proto-rescue T1
 U 1 1 56D751B3
@@ -736,7 +734,7 @@ F 3 "" H 10400 3400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 11100 2800 2    60   ~ 0
-Ibatt_scaled
+Ibatt_sense
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R19
 U 1 1 56D751B6
@@ -771,57 +769,35 @@ F 3 "" H 10000 8500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 9300 7800 0    60   ~ 0
-Vbatt_scaled
-Text Label 2750 6900 0    60   ~ 0
-Vline_scaled
+Vdc_scaled
+Text Label 2500 6900 0    60   ~ 0
+Vgrid_sense
 Text Label 2750 9600 0    60   ~ 0
-Iinv_scaled
+Iinv_sense
 Text Label 2850 12100 0    60   ~ 0
-Vinv_scaled
+Vinv_sense
 Text Label 2800 14600 0    60   ~ 0
+Ibatt_sense
+Text Label 6000 7000 0    60   ~ 0
+Vgrid_scaled
+Text Label 6000 9700 0    60   ~ 0
+Iinv_scaled
+Text Label 6000 12200 0    60   ~ 0
+Vinv_scaled
+Text Label 6000 14700 0    60   ~ 0
 Ibatt_scaled
-Text Label 5550 7000 0    60   ~ 0
-Vin_ac
-Text Label 5550 9700 0    60   ~ 0
-Iinv_ac
-Text Label 5550 12200 0    60   ~ 0
-Vinv_ac
-Text Label 5550 14700 0    60   ~ 0
-Ibatt
 Text Label 8500 11800 0    60   ~ 0
-Vin_ac
+Vgrid_scaled
 Text Label 8500 11900 0    60   ~ 0
-Iinv_ac
+Iinv_scaled
 Text Label 8500 12000 0    60   ~ 0
-Vinv_ac
+Vinv_scaled
 Text Label 8500 12100 0    60   ~ 0
-Ibatt
+Ibatt_scaled
 Text Label 8500 12200 0    60   ~ 0
-Vbatt_scaled
+Vdc_scaled
 Text Label 10700 11000 0    50   ~ 0
-XOR_OUT
-$Comp
-L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R33
-U 1 1 56D751B9
-P 11700 11000
-F 0 "R33" V 11780 11000 50  0000 C CNN
-F 1 "10K" V 11700 11000 50  0000 C CNN
-F 2 "" V 11630 11000 50  0000 C CNN
-F 3 "" H 11700 11000 50  0000 C CNN
-	1    11700 11000
-	0    1    1    0   
-$EndComp
-$Comp
-L openMicroInverter_dev-rescue:GND-SmartInverter_proto-rescue #PWR018
-U 1 1 56D751BB
-P 12050 11500
-F 0 "#PWR018" H 12050 11250 50  0001 C CNN
-F 1 "GND" H 12050 11350 50  0000 C CNN
-F 2 "" H 12050 11500 50  0000 C CNN
-F 3 "" H 12050 11500 50  0000 C CNN
-	1    12050 11500
-	1    0    0    -1  
-$EndComp
+ZCD_OUT
 Text Label 12400 11900 2    60   ~ 0
 ~grid_connect_relay
 Text Label 10700 11400 0    50   ~ 0
@@ -833,22 +809,22 @@ H_PWMA
 Text Label 10700 10900 0    50   ~ 0
 PLL_LOCK
 Text Label 11200 11500 0    60   ~ 0
-Vin_ac
+Vgrid_scaled
 Text Notes 11200 11600 0    60   ~ 0
 (ZCD input)
 $Comp
 L openMicroInverter_dev-rescue:GND-SmartInverter_proto-rescue #PWR014
 U 1 1 56D751BC
-P 4350 7400
-F 0 "#PWR014" H 4350 7150 50  0001 C CNN
-F 1 "GND" H 4350 7250 50  0000 C CNN
-F 2 "" H 4350 7400 50  0000 C CNN
-F 3 "" H 4350 7400 50  0000 C CNN
-	1    4350 7400
+P 4350 7500
+F 0 "#PWR014" H 4350 7250 50  0001 C CNN
+F 1 "GND" H 4350 7350 50  0000 C CNN
+F 2 "" H 4350 7500 50  0000 C CNN
+F 3 "" H 4350 7500 50  0000 C CNN
+	1    4350 7500
 	1    0    0    -1  
 $EndComp
 Text Label 11500 4600 0    60   ~ 0
-VBATT-
+VDC-
 $Comp
 L openMicroInverter_dev-rescue:CP-SmartInverter_proto-rescue C2
 U 1 1 56D751BD
@@ -908,8 +884,6 @@ Text Label 15750 4150 0    60   ~ 0
 ~grid_connect_relay
 Text Label 18100 3050 2    60   ~ 0
 P12V0
-Text Notes 11600 10850 0    60   ~ 0
-PLL loopfilter\n(obsolete)
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R12
 U 1 1 56D751C2
@@ -989,17 +963,6 @@ $EndComp
 Text Label 8500 11300 0    60   ~ 0
 P5V0
 $Comp
-L openMicroInverter_dev-rescue:CP-SmartInverter_proto-rescue C20
-U 1 1 56D751C9
-P 12050 11250
-F 0 "C20" H 12075 11350 50  0000 L CNN
-F 1 "47uF" H 12075 11150 50  0000 L CNN
-F 2 "" H 12088 11100 50  0000 C CNN
-F 3 "" H 12050 11250 50  0000 C CNN
-	1    12050 11250
-	1    0    0    -1  
-$EndComp
-$Comp
 L openMicroInverter_dev-rescue:MCP6004-SmartInverter_proto-rescue U2
 U 1 1 56D751CA
 P 4350 7000
@@ -1046,23 +1009,23 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:C-SmartInverter_proto-rescue C14
 U 1 1 56D751CE
-P 6050 6750
-F 0 "C14" H 6075 6850 50  0000 L CNN
-F 1 "100n" H 6075 6650 50  0000 L CNN
-F 2 "" H 6088 6600 50  0000 C CNN
-F 3 "" H 6050 6750 50  0000 C CNN
-	1    6050 6750
+P 6000 6450
+F 0 "C14" H 6025 6550 50  0000 L CNN
+F 1 "100n" H 6025 6350 50  0000 L CNN
+F 2 "" H 6038 6300 50  0000 C CNN
+F 3 "" H 6000 6450 50  0000 C CNN
+	1    6000 6450
 	1    0    0    -1  
 $EndComp
 $Comp
 L openMicroInverter_dev-rescue:GND-SmartInverter_proto-rescue #PWR012
 U 1 1 56D751CF
-P 6050 6950
-F 0 "#PWR012" H 6050 6700 50  0001 C CNN
-F 1 "GND" H 6050 6800 50  0000 C CNN
-F 2 "" H 6050 6950 50  0000 C CNN
-F 3 "" H 6050 6950 50  0000 C CNN
-	1    6050 6950
+P 6000 6650
+F 0 "#PWR012" H 6000 6400 50  0001 C CNN
+F 1 "GND" H 6000 6500 50  0000 C CNN
+F 2 "" H 6000 6650 50  0000 C CNN
+F 3 "" H 6000 6650 50  0000 C CNN
+	1    6000 6650
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1079,12 +1042,12 @@ $EndComp
 $Comp
 L openMicroInverter_dev-rescue:GND-SmartInverter_proto-rescue #PWR016
 U 1 1 56D751D1
-P 3850 8150
-F 0 "#PWR016" H 3850 7900 50  0001 C CNN
-F 1 "GND" H 3850 8000 50  0000 C CNN
-F 2 "" H 3850 8150 50  0000 C CNN
-F 3 "" H 3850 8150 50  0000 C CNN
-	1    3850 8150
+P 3850 8100
+F 0 "#PWR016" H 3850 7850 50  0001 C CNN
+F 1 "GND" H 3850 7950 50  0000 C CNN
+F 2 "" H 3850 8100 50  0000 C CNN
+F 3 "" H 3850 8100 50  0000 C CNN
+	1    3850 8100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1186,7 +1149,7 @@ F 3 "" H 3850 15600 50  0000 C CNN
 	1    3850 15600
 	1    0    0    -1  
 $EndComp
-Text Label 2750 7100 0    60   ~ 0
+Text Label 2500 7100 0    60   ~ 0
 P5V0
 Text Label 2750 9800 0    60   ~ 0
 P5V0
@@ -1198,7 +1161,7 @@ Text Notes 3950 7250 0    60   ~ 0
 1.25V
 Text Notes 4900 7150 0    60   ~ 0
 2.5V
-Text Label 6350 6500 0    60   ~ 0
+Text Label 6350 6200 0    60   ~ 0
 P5V0
 $Comp
 L openMicroInverter_dev-rescue:R-SmartInverter_proto-rescue R15
@@ -1409,23 +1372,14 @@ F 3 "" H 18500 11050 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6000 3200 6000 3400
+	6000 3200 6000 3500
 Wire Wire Line
-	6000 3400 6000 3600
+	7500 3500 7500 3750
 Wire Wire Line
-	6000 3600 6000 3900
+	6000 3500 6500 3500
 Wire Wire Line
-	7500 3200 7500 3400
-Wire Wire Line
-	7500 3400 7500 3600
-Wire Wire Line
-	7500 3600 7500 3900
-Wire Wire Line
-	6000 3600 6300 3600
-Connection ~ 6000 3600
-Wire Wire Line
-	7500 3600 7200 3600
-Connection ~ 7500 3600
+	7500 3500 7000 3500
+Connection ~ 7500 3500
 Wire Wire Line
 	6000 2800 6000 2000
 Wire Wire Line
@@ -1434,12 +1388,9 @@ Wire Wire Line
 	7500 4600 7500 4300
 Wire Wire Line
 	6000 4600 6000 4300
-Connection ~ 6000 3400
+Connection ~ 6000 3500
 Wire Wire Line
 	5200 3400 5200 4100
-Wire Wire Line
-	7500 3400 7800 3400
-Connection ~ 7500 3400
 Wire Wire Line
 	5600 3000 5700 3000
 Wire Wire Line
@@ -1465,11 +1416,11 @@ Wire Wire Line
 Wire Wire Line
 	3700 3200 3800 3200
 Wire Wire Line
-	3800 3200 5500 3200
+	3800 3200 5450 3200
 Wire Wire Line
-	5500 3200 5500 3400
+	5450 3200 5450 3500
 Wire Wire Line
-	5500 3400 6000 3400
+	5450 3500 6000 3500
 Wire Wire Line
 	3700 3400 5200 3400
 Wire Wire Line
@@ -1546,17 +1497,17 @@ Wire Wire Line
 Wire Wire Line
 	17700 3050 18100 3050
 Wire Wire Line
-	17700 3050 17700 3400
+	17700 3050 17700 3500
 Wire Wire Line
-	17700 3400 17350 3400
+	17700 3500 17350 3500
 Wire Wire Line
 	16800 3050 16700 3050
 Wire Wire Line
-	16700 3050 16700 3400
+	16700 3050 16700 3500
 Wire Wire Line
-	16700 3400 16700 4150
+	16700 3500 16700 4150
 Wire Wire Line
-	16700 3400 17050 3400
+	16700 3500 17050 3500
 Wire Wire Line
 	14500 2400 15700 2400
 Wire Wire Line
@@ -1667,46 +1618,36 @@ Wire Wire Line
 Wire Wire Line
 	4900 2500 4900 2600
 Wire Wire Line
-	3750 7100 3850 7100
+	3500 7100 3850 7100
 Wire Wire Line
 	3850 7100 3950 7100
 Wire Wire Line
 	3850 7300 3850 7100
 Connection ~ 3850 7100
 Wire Wire Line
-	3750 6900 3850 6900
+	3500 6900 3850 6900
 Wire Wire Line
 	3850 6900 3950 6900
 Wire Wire Line
 	4950 7000 5000 7000
 Wire Wire Line
-	5000 7000 5100 7000
+	5000 7000 5350 7000
 Wire Wire Line
-	5400 7000 5550 7000
-Wire Wire Line
-	4150 6300 3850 6300
-Wire Wire Line
-	3850 6000 3850 6300
-Wire Wire Line
-	3850 6300 3850 6900
-Connection ~ 3850 6900
-Wire Wire Line
-	4450 6300 5000 6300
-Wire Wire Line
-	5000 6000 5000 6300
-Wire Wire Line
-	5000 6300 5000 7000
-Connection ~ 5000 7000
-Wire Wire Line
-	4600 6000 5000 6000
-Connection ~ 5000 6300
+	5650 7000 6000 7000
 Wire Wire Line
 	4300 6000 3850 6000
-Connection ~ 3850 6300
+Connection ~ 3850 6900
 Wire Wire Line
-	3450 6900 2750 6900
+	4600 6000 5000 6000
+Connection ~ 5000 7000
 Wire Wire Line
-	3450 7100 2750 7100
+	4600 5700 5000 5700
+Wire Wire Line
+	4300 5700 3850 5700
+Wire Wire Line
+	3200 6900 2500 6900
+Wire Wire Line
+	3200 7100 2500 7100
 Wire Wire Line
 	3750 9800 3850 9800
 Wire Wire Line
@@ -1721,29 +1662,19 @@ Wire Wire Line
 Wire Wire Line
 	4950 9700 5000 9700
 Wire Wire Line
-	5000 9700 5100 9700
+	5000 9700 5350 9700
 Wire Wire Line
-	5400 9700 5550 9700
+	5650 9700 6000 9700
 Wire Wire Line
-	4150 9000 3850 9000
-Wire Wire Line
-	3850 8800 3850 9000
-Wire Wire Line
-	3850 9000 3850 9600
+	4250 9100 3850 9100
 Connection ~ 3850 9600
 Wire Wire Line
-	4450 9000 5000 9000
-Wire Wire Line
-	5000 8800 5000 9000
-Wire Wire Line
-	5000 9000 5000 9700
+	4550 9100 5000 9100
 Connection ~ 5000 9700
 Wire Wire Line
-	4450 8800 5000 8800
-Connection ~ 5000 9000
+	4550 8800 5000 8800
 Wire Wire Line
-	4150 8800 3850 8800
-Connection ~ 3850 9000
+	4250 8800 3850 8800
 Wire Wire Line
 	3450 9600 2750 9600
 Wire Wire Line
@@ -1762,29 +1693,19 @@ Wire Wire Line
 Wire Wire Line
 	4950 12200 5000 12200
 Wire Wire Line
-	5000 12200 5100 12200
+	5000 12200 5350 12200
 Wire Wire Line
-	5400 12200 5550 12200
+	5650 12200 6000 12200
 Wire Wire Line
-	4150 11500 3850 11500
-Wire Wire Line
-	3850 11300 3850 11500
-Wire Wire Line
-	3850 11500 3850 12100
+	4250 11600 3850 11600
 Connection ~ 3850 12100
 Wire Wire Line
-	4450 11500 5000 11500
-Wire Wire Line
-	5000 11300 5000 11500
-Wire Wire Line
-	5000 11500 5000 12200
+	4550 11600 5000 11600
 Connection ~ 5000 12200
 Wire Wire Line
-	4450 11300 5000 11300
-Connection ~ 5000 11500
+	4550 11300 5000 11300
 Wire Wire Line
-	4150 11300 3850 11300
-Connection ~ 3850 11500
+	4250 11300 3850 11300
 Wire Wire Line
 	3450 12100 2850 12100
 Wire Wire Line
@@ -1803,29 +1724,19 @@ Wire Wire Line
 Wire Wire Line
 	4950 14700 5000 14700
 Wire Wire Line
-	5000 14700 5100 14700
+	5000 14700 5350 14700
 Wire Wire Line
-	5400 14700 5550 14700
+	5650 14700 6000 14700
 Wire Wire Line
-	4150 14000 3850 14000
-Wire Wire Line
-	3850 13800 3850 14000
-Wire Wire Line
-	3850 14000 3850 14600
+	4250 14100 3850 14100
 Connection ~ 3850 14600
 Wire Wire Line
-	4450 14000 5000 14000
-Wire Wire Line
-	5000 13800 5000 14000
-Wire Wire Line
-	5000 14000 5000 14700
+	4550 14100 5000 14100
 Connection ~ 5000 14700
 Wire Wire Line
-	4450 13800 5000 13800
-Connection ~ 5000 14000
+	4550 13800 5000 13800
 Wire Wire Line
-	4150 13800 3850 13800
-Connection ~ 3850 14000
+	4250 13800 3850 13800
 Wire Wire Line
 	3450 14600 2800 14600
 Wire Wire Line
@@ -1867,15 +1778,7 @@ Wire Wire Line
 Wire Wire Line
 	9100 12200 8500 12200
 Wire Wire Line
-	10500 11000 11550 11000
-Wire Wire Line
-	11850 11000 12050 11000
-Wire Wire Line
-	12050 11000 12500 11000
-Wire Wire Line
-	12050 11000 12050 11100
-Wire Wire Line
-	12050 11400 12050 11500
+	10500 11000 10700 11000
 Wire Wire Line
 	10500 12100 10700 12100
 Wire Wire Line
@@ -1884,11 +1787,6 @@ Wire Wire Line
 	10500 11700 10700 11700
 Wire Wire Line
 	10500 10900 10700 10900
-Wire Wire Line
-	8900 12300 8900 13000
-Wire Wire Line
-	8900 12300 9100 12300
-Connection ~ 12050 11000
 Wire Wire Line
 	10500 11200 10700 11200
 Wire Wire Line
@@ -1908,14 +1806,10 @@ Wire Wire Line
 Wire Wire Line
 	11500 11900 11500 12100
 Wire Wire Line
-	8900 13000 12500 13000
-Wire Wire Line
-	12500 13000 12500 11000
-Wire Wire Line
 	12400 11900 11500 11900
 Wire Wire Line
 	16700 4150 15750 4150
-Connection ~ 16700 3400
+Connection ~ 16700 3500
 Connection ~ 17700 3050
 Wire Wire Line
 	20500 5100 20650 5100
@@ -1943,20 +1837,17 @@ Connection ~ 1700 4000
 Wire Wire Line
 	9100 11300 8500 11300
 Wire Wire Line
-	4350 6600 4350 6500
+	4350 6600 4350 6200
 Wire Wire Line
-	4350 6500 6050 6500
+	4350 6200 6000 6200
 Wire Wire Line
-	6050 6500 6350 6500
+	6000 6300 6000 6200
 Wire Wire Line
-	6050 6600 6050 6500
-Connection ~ 6050 6500
-Wire Wire Line
-	6050 6900 6050 6950
+	6000 6600 6000 6650
 Wire Wire Line
 	3850 7600 3850 7700
 Wire Wire Line
-	3850 8000 3850 8150
+	3850 8000 3850 8100
 Wire Wire Line
 	3850 10200 3850 10250
 Wire Wire Line
@@ -2147,14 +2038,14 @@ Wire Wire Line
 Wire Wire Line
 	10000 6500 10250 6500
 Text Label 10250 6500 0    60   ~ 0
-VBATT+
+VDC+
 Text Notes 18300 4600 0    60   ~ 0
 48.2mH / 1.8E
 Text Notes 7750 2600 0    60   ~ 0
 use 80V low \nRDS-on MOSFET\n
 Text Notes 19450 3550 0    60   ~ 0
 20 wdg.
-Text Notes 4650 7500 0    60   ~ 0
+Text Notes 5000 7650 0    60   ~ 0
 Use rail-to-rail in- and output type OPAMP.
 Text Notes 16350 5750 0    60   ~ 0
 Transformer used with the development model: 240V / 18V - 200VA\nTransformer ratio and power rating may vary depending on the application.\n
@@ -2265,4 +2156,105 @@ Wire Wire Line
 	10500 10800 10700 10800
 Text Label 10700 10800 0    50   ~ 0
 GND
+$Comp
+L Device:R_POT_US RV1
+U 1 1 5EE68759
+P 8000 13000
+F 0 "RV1" H 7932 13046 50  0000 R CNN
+F 1 "10k" H 7932 12955 50  0000 R CNN
+F 2 "" H 8000 13000 50  0001 C CNN
+F 3 "~" H 8000 13000 50  0001 C CNN
+	1    8000 13000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8500 12300 8500 13000
+Wire Wire Line
+	8500 13000 8150 13000
+Wire Wire Line
+	8500 12300 9100 12300
+Wire Wire Line
+	8000 13150 8000 13500
+Wire Wire Line
+	8000 12850 8000 12650
+Wire Wire Line
+	8000 12650 7750 12650
+$Comp
+L openMicroInverter_dev-rescue:GND-SmartInverter_proto-rescue #PWR?
+U 1 1 5EF09665
+P 8000 13500
+F 0 "#PWR?" H 8000 13250 50  0001 C CNN
+F 1 "GND" H 8000 13350 50  0000 C CNN
+F 2 "" H 8000 13500 50  0000 C CNN
+F 3 "" H 8000 13500 50  0000 C CNN
+	1    8000 13500
+	1    0    0    -1  
+$EndComp
+Text Label 7750 12650 0    50   ~ 0
+P5V0
+Text Label 8500 12300 0    50   ~ 0
+VPOT
+Connection ~ 3850 11600
+Wire Wire Line
+	3850 11600 3850 12100
+Connection ~ 5000 11600
+Wire Wire Line
+	5000 11600 5000 12200
+Wire Wire Line
+	3850 11300 3850 11600
+Wire Wire Line
+	5000 11300 5000 11600
+Connection ~ 3850 14100
+Wire Wire Line
+	3850 14100 3850 14600
+Connection ~ 5000 14100
+Wire Wire Line
+	5000 14100 5000 14700
+Wire Wire Line
+	3850 13800 3850 14100
+Wire Wire Line
+	5000 13800 5000 14100
+Connection ~ 3850 9100
+Wire Wire Line
+	3850 9100 3850 9600
+Connection ~ 5000 9100
+Wire Wire Line
+	5000 9100 5000 9700
+Wire Wire Line
+	3850 8800 3850 9100
+Wire Wire Line
+	5000 8800 5000 9100
+Wire Wire Line
+	3850 6000 3850 6900
+Wire Wire Line
+	5000 6000 5000 7000
+Wire Wire Line
+	3850 5700 3850 6000
+Connection ~ 3850 6000
+Wire Wire Line
+	5000 5700 5000 6000
+Connection ~ 5000 6000
+Wire Wire Line
+	4350 7400 4350 7500
+Connection ~ 6000 6200
+Wire Wire Line
+	6000 6200 6350 6200
+Wire Wire Line
+	6000 3500 6000 3900
+Wire Wire Line
+	4300 4000 5000 4000
+Wire Wire Line
+	5000 4000 5000 4400
+Wire Wire Line
+	5000 4400 6750 4400
+Wire Wire Line
+	6750 4400 6750 3750
+Wire Wire Line
+	6750 3750 7500 3750
+Connection ~ 4300 4000
+Connection ~ 7500 3750
+Wire Wire Line
+	7500 3750 7500 3900
+Wire Wire Line
+	7500 3200 7500 3500
 $EndSCHEMATC

@@ -22,7 +22,7 @@
 
 
 #define PIN_LED 13		// PLL locking status indicator LED
-#define PIN_ZCD_OUT 4   // ZCD output pin
+#define PIN_ZCD_OUT 12   // ZCD output pin
 #define PIN_ANCREF 6	// AN comparator reference input biased on 2.5V.
 #define PIN_ANCIN 7   // AN comparator input for ZCD. Scaled line voltage input biased on 2.5V
 
