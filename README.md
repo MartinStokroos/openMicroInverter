@@ -92,8 +92,9 @@ Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Librar
 
 **Current Software Status**
 
-1. Work is done on an inverter example that syncs to the grid, but still not connects to the grid (only in a very controlled experimental setting).
-2. The plan is to increase the effective duty-cycle range in hybrid-mode by using the AHI and BHI control signals to the HIP-4082.
+1. Now the inverter synchronizes to the grid, but can not operate grid connected since there is no currrent control yet (I was tested only in a very controlled experimental setting).
+2. Hybride switching is not working correctly.
+3. The plan is to increase the effective duty-cycle range in hybrid-mode by using the AHI and BHI control signals to the HIP-4082.
 
 ### Example Sketches
 *ZeroCrossingDetector* - This example demonstrates Zero Crossing Detection (ZCD) with the analog comparator of the ATMEGA328. The comparator interrupts on output toggle. The sign of the sine wave is determined from the ADC input. The output of the ZCD only toggles from high to low when the sign of the AC input is positive and vice verse.
