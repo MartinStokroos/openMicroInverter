@@ -29,7 +29,7 @@ To be continued...
 **The openMicroInverter hardware**
 The *oμiv* is designed as a single PCB module and is build with low-cost components.
  
-This is work is under development...
+To be continued...
 
 ### Software Description
 Arduino-UNO Pin-out:
@@ -92,12 +92,14 @@ Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Librar
 
 **Current Software Status**
 
-1. Now the inverter synchronizes to the grid, but can not operate grid-connected since there is no current control yet (It was tested only in a very controlled experimental setting).
+1. Now the inverter synchronizes to the grid but can not operate grid-connected since there is no current control yet (It was tested only in a very controlled experimental setting).
 2. Hybride switching is not working correctly.
 3. The plan is to increase the effective duty-cycle range in hybrid-mode by using the AHI and BHI control signals to the HIP-4082.
+4. Documentation and examples for the PowerSys library.
+5. Final *oμiv* hardware design and PCB.
 
 ### Example Sketches
-**ZeroCrossingDetector -**
+**ZeroCrossingDetector.ino -**
 This example demonstrates Zero Crossing Detection (ZCD) with the analog comparator of the ATMEGA328. The comparator interrupts on output toggle. The sign of the sine wave is determined from the ADC input. The output of the ZCD only toggles from high to low when the sign of the AC input is positive and vice verse.
 
 ![ZCD](figures/SCR_comparator.GIF  "ZCD in and output signals")
