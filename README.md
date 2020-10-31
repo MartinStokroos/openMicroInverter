@@ -2,13 +2,14 @@
 ### An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and (possibly) grid tie inverters.
 
 ### What is the openMicroInverter?
-The *openMicroInverter*, or in short *oμiv*, is an **Arduino-UNO based** DC-to-AC power converter. The *oμiv* platform is meant for doing experiments with power electronics and energy systems. The *oμiv* is intended to work as:
+The *openMicroInverter*, or in short *oμiv*, is an **Arduino-UNO based** DC-to-AC power converter. The *oμiv* platform is meant for doing experiments with power electronics and energy systems. The *oμiv* is intended to be configurable as:
 
 1. DC-to-AC power inverter for off the grid applications,
-2. AC power meter and energy metering device,
-3. an inverter which phase-locks to the grid,
-4. solar-inverter or inverter for energy storage systems and
-5. a bi-directional power converter.
+2. AC-power and energy metering device,
+3. inverter which phase-locks to the grid,
+4. uninterruptible power supply,
+5. solar-inverter or inverter for energy storage systems or as
+6. bi-directional power converter.
 
 Why then using the 8-bit Arduino-UNO? Just because it is fun to squeeze the most out of it:-) Furthermore, this project shows the full capabilities of the [TrueRMS](https://github.com/MartinStokroos/TrueRMS) Arduino library from one of my other repositories. Applications i, ii and iii have been successfully realized so far...
 
@@ -36,12 +37,12 @@ Arduino-UNO Pin-out:
 
 Pin | In/Out | Function
 --- | ------ | --------
-A0 | input | scaled ac mains voltage biased on 2.5V DC.
-A1 | input | scaled ac inverter current biased on 2.5V DC.
-A2 | input | scaled ac inverter voltage biased on 2.5V DC.
-A3 | input | scaled battery current biased on 2.5V DC.
-A4 | input | scaled battery voltage input.
-A5 | input | (optional analog input)
+A0 | input | scaled ac mains voltage biased on 2.5V DC
+A1 | input | scaled ac inverter current biased on 2.5V DC
+A2 | input | scaled ac inverter voltage biased on 2.5V DC
+A3 | input | scaled battery current biased on 2.5V DC
+A4 | input | scaled battery voltage input
+A5 | input | optional analog input, currently used as potmeter control input
 D2 | output | islanding relay (future function)
 D3 | output | AHI control signal to HIP4082 H-bridge driver
 D4 | output | debug output pin
