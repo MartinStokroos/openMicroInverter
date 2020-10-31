@@ -1,10 +1,14 @@
 /*
  * File: Inverter1.ino
  * Purpose: openMicroInverter example project. This sketch establishes a voltage-mode inverter without output voltage control (open loop).
- * Version: 1.1.0
+ * Version: 1.2.0
  * Release date: 02-12-2019
  * 
- * Last update: 30-10-2020
+ * Last update: 31-10-2020
+ * 
+ * Changes in 1.2.0
+ * - Inverter amplitude control by potmeter (0-5V) on ADC input A5.
+ * - RMS voltage readout on ADC input A0 (meant for Vgrid).
  * 
  * Changes in 1.1.0: 
  * - Works with powerSys library v1.1.0.
@@ -35,7 +39,7 @@
 //#define HYBRID  // bipolar switching, bottom H-bridge=LF
 
 #define LPPERIOD 1000000    // main loop period time in us. In this case 1s.
-#define RMSWINDOW 40 // RMS window, number of samples used for the RMS calculation.
+#define RMSWINDOW 20 // RMS window, number of samples used for the RMS calculation.
 
 #define PIN_LED 13    // PLL locking status indicator LED
 #define PIN_H_PWMA 9  // Timer1 OCR1A 10-bit PWM
@@ -47,16 +51,20 @@
 #define PIN_DEBUG 4 // debugging output pin
 
 //scaling calibration
+const float gridVoltRange = 660.0; //Vp-p full scale.
 const float outputVoltRange = 668.0; //Vp-p full scale.
 const float outputCurrRange = 4.5; //Ap-p full scale.
-const float vBattRange = 5.00; //Vbatt max, not scaled correctly yet.
-const float iBattRange = 5.00; //Ibatt, not scaled correctly yet.
+const float vBattRange = 5.00; //Vbatt scaled max, not scaled correctly yet.
+const float iBattRange = 5.00; //Ibatt scaled max, not scaled correctly yet.
+const float vPotRange = 1.00; //Vpotmeter scaled max, used for amplitude control of the output wave.
 
 // ADC vars
 volatile int adcVal;
 volatile int adcMuxIdx = 0;  // multiplexer index
 
 // PWM DAC
+float mgain = 1.0;
+float amplitude;
 unsigned int ndac_out;  // DAC magnitude value
 unsigned int pdac_out;
 int dac_out;
@@ -65,10 +73,12 @@ int dac_out;
 const float TD = 1/6000.0; //time step for f=6000 Hz
 const float f0 = 50.0; // output frequency in Hz
 
-// define instances for ac/dc voltage, current and power metering and DDS
+// define instances for ac/dc voltage, current and power measurements and wave generation
+Rms2 gridVolt;
 Power2 acOutput;
 Average vBatt;
 Average iBatt;
+Average vPot;
 PowerControl outputWave;
 
 unsigned long nextLoop;
@@ -160,13 +170,18 @@ void setup(){
   // enable timer compare interrupt
   bitSet(TIMSK1, TOIE1); // enable Timer1 Interrupt
 
+  gridVolt.begin(gridVoltRange, RMSWINDOW, ADC_10BIT, BLR_ON, CNT_SCAN);
   acOutput.begin(outputCurrRange, outputVoltRange, RMSWINDOW, ADC_10BIT, BLR_ON, CNT_SCAN);
   vBatt.begin(vBattRange, RMSWINDOW, ADC_10BIT, CNT_SCAN);
   iBatt.begin(iBattRange, RMSWINDOW, ADC_10BIT, CNT_SCAN);
+  vPot.begin(vPotRange, 4, ADC_10BIT, CNT_SCAN);
+
+  gridVolt.start();
   acOutput.start();
   vBatt.start();
   iBatt.start();
-  outputWave.osgBegin(f0, TD); // initilize the DDS (frequency, startphase, timestep)
+  vPot.start();
+  outputWave.osgBegin(f0, TD); // initilize the DDS (frequency, timestep)
 
   sei(); // enable interrupts
   nextLoop = micros() + LPPERIOD; // Set the loop timer variable for the next loop interval.
@@ -180,10 +195,18 @@ void setup(){
 // ******************************************************************
 void loop(){
   digitalWriteFast(PIN_LED, HIGH);
+
+  gridVolt.publish();
   vBatt.publish();
   iBatt.publish();
+  vPot.publish();
   acOutput.publish();
-  
+
+  mgain = vPot.average; // read amplitude control gain setting from potmeter.
+                        // Note: amplitude setting is updated with the frequency of the main loop (slow)! 
+
+  Serial.print(gridVolt.rmsVal, 0); // print the RMS input voltage
+  Serial.print(", ");
   Serial.print(acOutput.rmsVal2, 0); // print the RMS output voltage
   Serial.print(", ");
   Serial.print(acOutput.rmsVal1, 2); // print the RMS output current
@@ -215,7 +238,8 @@ ISR(ADC_vect){
   adcVal+=ADCH<<8; // store high byte
   switch (adcMuxIdx) {
     case 0:
-      //time slot for sampling the grid voltage (future)
+      //time slot for sampling the grid voltage
+      gridVolt.update(adcVal);
     break;
 
     case 1:
@@ -240,7 +264,9 @@ ISR(ADC_vect){
 
     case 5:
       // optional time slot
+      vPot.update(adcVal);
     break;
+    
     // default:
   }
   adcMuxIdx++;
@@ -259,12 +285,13 @@ ISR(ADC_vect){
 *  Timer1 ISR running at 6000Hz
 *********************************************************************/
 ISR(TIMER1_OVF_vect) {
-  
   // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
   // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
+  
   #ifdef UNIPOL
-	  outputWave.osgUpdate1(0, 0); // generate the reference sin wave with DDS.
-    pdac_out = outputWave.rcos; // + 0x1FF; //make unsigned, 10 bit range
+	  outputWave.osgUpdate2(0, 0); // generate signed reference sin wave with DDS.
+    amplitude = (float)outputWave.rcos * mgain;
+    pdac_out = (int)amplitude + 0x1FF; //make unsigned, 10 bit range
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
     pdac_out += ICR1_OFFSET; // add offset to center between the BOTTOM to TOP value range of the timer.
     ndac_out += ICR1_OFFSET;
@@ -279,8 +306,9 @@ ISR(TIMER1_OVF_vect) {
   // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
   //dac_out += 0x1FF;
   #ifdef BIPOL
-	  outputWave.osgUpdate1(0, 0);     // generate the reference sin wave with DDS.
-    dac_out = outputWave.rcos;
+	  outputWave.osgUpdate2(0, 0);     // generate the reference sin wave with DDS.
+    amplitude = (float)outputWave.rcos * mgain;
+    dac_out = (int)amplitude + 0x1FF;
     dac_out += ICR1_OFFSET;
     OCR1AH = dac_out >> 8; // top 8 bits
     OCR1AL = dac_out; //bottom 8 bits
@@ -291,12 +319,12 @@ ISR(TIMER1_OVF_vect) {
   // LF+PWM dive. Not optimal yet... Reference wave should be half wave with 10bit or more amplitude range.
   #ifdef HYBRID
 	  outputWave.osgUpdate2(0, 0); // generate the reference sin wave with DDS.
-    dac_out = outputWave.rcos;
-    // write magnitude data to PWM output registers A&B (10bit).
+    amplitude = (float)outputWave.rcos * mgain;
+    dac_out = (int)amplitude;
     if (dac_out >= 0) {
-      digitalWriteFast(PIN_H_AHI, LOW);
+      digitalWriteFast(PIN_H_AHI, LOW); // write magnitude data to PWM output registers A&B (10bit).
       digitalWriteFast(PIN_H_BHI, HIGH);
-      //dac_out = dac_out<<1; //times 2
+      //dac_out = dac_out<<1; //scaling incorrect - this should be fixed by lookup table in PowerSys lib...
       //dac_out += ICR1_OFFSET; //?
       OCR1AH = dac_out>>8; // top 8 bits
       OCR1AL = dac_out; // bottom 8 bits
