@@ -1,4 +1,4 @@
-# openMicroInverter ![ Fig. 0.](figures/oshw-logo-100-px.png  "oshw logo.")
+# ![ Fig. 0.](figures/openmicroinverter-logo-small.png  "oμiv logo") openMicroInverter ![ Fig. 1.](figures/oshw-logo-100-px.png  "oshw logo")
 ### An open source hardware platform for experimenting with DC-to-AC conversion, power and energy metering and (possibly) grid tie inverters.
 
 ### What is the openMicroInverter?
@@ -76,7 +76,7 @@ Scheme | Description | Remarks
 
 The implementation for the clocking scheme 2 as selected, is shown in the following figure:
 
-![ouiv clocking scheme](figures/clocking_scheme_2.png  "ouiv clocking scheme")
+![ Fig. 3.](figures/clocking_scheme_2.png  "oμiv clocking scheme")
 
 In this scheme, the zero crossing detector is no longer needed. The phase is detected by using quadrature sampling of the input signal and a CORDIC function for calculating the phase angle relative to the ADC sampling clock. The phase of the grid voltage is measured and the phase of the DDS reference wave (option A) or the measured inverter output voltage (option B). 
 Switch position A is used with example sketch *Inverter2.ino* and switch position B is used with example sketch *Inverter3.ino*. Amplitude control is not implemented yet.
@@ -103,7 +103,7 @@ Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Librar
 **ZeroCrossingDetector.ino -**
 This example demonstrates Zero Crossing Detection (ZCD) with the analog comparator of the ATMEGA328. The comparator interrupts on output toggle. The sign of the sine wave is determined from the ADC input. The output of the ZCD only toggles from high to low when the sign of the AC input is positive and vice verse.
 
-![ZCD](figures/SCR_comparator.GIF  "ZCD in and output signals")
+![ Fig. 4.](figures/SCR_comparator.GIF  "ZCD in- and output signals")
 #
 **Inverter1.ino -**
 Sketch to evaluate the different ways of gating the H-bridge to generate a sine wave output. This sketch works on the *openMicroInverter_dev* hardware. The inverter works in voltage-mode without output voltage control (open loop). The timing is according scheme 1, which gives stable readings of the measurements but the switching frequency is on the low side and the duty-cycle range is limited between 12% and 88%. unipolar switching runs the most smoothly.
@@ -113,12 +113,12 @@ This sketch synchronizes the internal reference generator to the grid voltage. T
 The plot below shows the grid phase and the inverter phase (arbitrary units) when locked. In the locked state the Arduino LED will turn on.
 If both lines run perfectly horizontal then the ADC sampling frequency is an exact multiple of 120 times the grid frequency. The grid frequency normally drifts around 50Hz and the *Arduino* crystal oscillator frequency drifts because of temperature effects and aging. The lines are usually not running horizontal.
 
-![Phase comparison](figures/Screenshot_2020-10-30_15-05-11.png  "Phase comparison")
+![ Fig. 5.](figures/Screenshot_2020-10-30_15-05-11.png  "Phase comparison")
 
 **Inverter3.ino -**
 This sketch synchronizes the measured inverter output voltage to the grid voltage. The plot below shows the phase locking when the grid connection is turned on around time stamp 1140.
 
-![Phase comparison](figures/Screenshot_2020-10-30_17-32-35.png  "Phase comparison")
+![ Fig. 6.](figures/Screenshot_2020-10-30_17-32-35.png  "Phase comparison")
 
 #
 **Metering.ino -**
