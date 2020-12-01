@@ -6,9 +6,11 @@
  * It synchronizes the output wave to the grid voltage. Do not connect the inverter output in parallel with
  * the grid with this example! There is no current control yet.
  *
- * Version: 1.0.0
+ * Version: 1.0.1
  * Release date: 28-10-2020
- * Last update:
+ * Last update:01-12-2020
+ * 
+ * Changes in 1.0.1: Compatibility with PowerSys lib 1.1.1
  *
  * URL: https://github.com/MartinStokroos/openMicroInverter
  *
@@ -455,8 +457,8 @@ ISR(TIMER1_OVF_vect) {
   #ifdef UNIPOL
     // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
     // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
-    outputWave.osgUpdate1(phaseIncrement, phaseOffset);
-    pdac_out = outputWave.rcos; //make unsigned, 10 bit range
+    outputWave.osgMaSlUpdate1(phaseIncrement, phaseOffset);
+    pdac_out = outputWave.rcos;
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
     pdac_out += ICR1_OFFSET; // add offset to center between the BOTTOM to TOP value range of the timer.
     ndac_out += ICR1_OFFSET;
@@ -469,7 +471,7 @@ ISR(TIMER1_OVF_vect) {
   #endif
 
   #ifdef BIPOL
-    outputWave.osgUpdate1(phaseIncrement, phaseOffset);
+    outputWave.osgMaSlUpdate1(phaseIncrement, phaseOffset);
     dac_out = outputWave.rcos;
     // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
     //dac_out += 0x1FF;
@@ -481,7 +483,7 @@ ISR(TIMER1_OVF_vect) {
   #endif
 
   #ifdef HYBRID
-    outputWave.osgUpdate2(phaseIncrement, phaseOffset);
+    outputWave.osgMaSlUpdate2(phaseIncrement, phaseOffset);
     dac_out = outputWave.rcos;
     // write magnitude data to PWM output registers A&B (10bit).
     if (dac_out >= 0) {

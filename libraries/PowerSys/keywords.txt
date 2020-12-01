@@ -14,10 +14,11 @@ PowerControl		KEYWORD1
 
 osgBegin		KEYWORD2
 osgUpdate1		KEYWORD2
-osgUpdate2		KEYWORD2
-osgUpdate3		KEYWORD2
-osgUpdate4		KEYWORD2
-osgUpdate5		KEYWORD2
+osgMaSlUpdate1		KEYWORD2
+osgMaSlUpdate2		KEYWORD2
+osgMaSlUpdate3		KEYWORD2
+osgMaSlUpdate4		KEYWORD2
+osgMaSlUpdate5		KEYWORD2
 park			KEYWORD2
 ipark			KEYWORD2
 

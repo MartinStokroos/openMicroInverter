@@ -1,10 +1,12 @@
 /*
  * File: Inverter1.ino
  * Purpose: openMicroInverter example project. This sketch establishes a voltage-mode inverter without output voltage control (open loop).
- * Version: 1.2.0
+ * Version: 1.2.1
  * Release date: 02-12-2019
  * 
- * Last update: 31-10-2020
+ * Last update: 01-12-2020
+ * 
+ * Changes in 1.2.1: Compatibility with PowerSys lib 1.1.1
  * 
  * Changes in 1.2.0
  * - Inverter amplitude control by potmeter (0-5V) on ADC input A5.
@@ -289,7 +291,7 @@ ISR(TIMER1_OVF_vect) {
   // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
   
   #ifdef UNIPOL
-	  outputWave.osgUpdate2(0, 0); // generate signed reference sin wave with DDS.
+	  outputWave.osgMaSlUpdate2(0, 0); // generate signed reference sin wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     pdac_out = (int)amplitude + 0x1FF; //make unsigned, 10 bit range
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
@@ -306,7 +308,7 @@ ISR(TIMER1_OVF_vect) {
   // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
   //dac_out += 0x1FF;
   #ifdef BIPOL
-	  outputWave.osgUpdate2(0, 0);     // generate the reference sin wave with DDS.
+	  outputWave.osgMaSlUpdate2(0, 0);     // generate the reference sin wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     dac_out = (int)amplitude + 0x1FF;
     dac_out += ICR1_OFFSET;
@@ -318,7 +320,7 @@ ISR(TIMER1_OVF_vect) {
 
   // LF+PWM dive. Not optimal yet... Reference wave should be half wave with 10bit or more amplitude range.
   #ifdef HYBRID
-	  outputWave.osgUpdate2(0, 0); // generate the reference sin wave with DDS.
+	  outputWave.osgMaSlUpdate2(0, 0); // generate the reference sin wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     dac_out = (int)amplitude;
     if (dac_out >= 0) {

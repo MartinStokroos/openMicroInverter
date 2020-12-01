@@ -2,9 +2,9 @@
  *
  * File: PowerSys.h
  * Purpose:
- * Version: 1.1.0
+ * Version: 1.1.1
  * Initial release date: 17-10-2019
- * Date: 28-7-2020
+ * Date: 01-12-2020
  * URL: https://github.com/MartinStokroos/PowerSys
  * License: MIT License
  *
@@ -399,11 +399,12 @@ class PowerControl
 {
 public:
 	void osgBegin(float _freq, float _deltat);
-	void osgUpdate1(unsigned long _phaseInc, unsigned long _phaseOffset);
-	void osgUpdate2(unsigned long _phaseInc, unsigned long _phaseOffset);
-	void osgUpdate3(unsigned long _phaseInc, unsigned long _phaseOffset);
-	void osgUpdate4(unsigned long _phaseInc, unsigned long _phaseOffset);
-	void osgUpdate5(unsigned long _phaseInc, unsigned long _phaseOffset);
+	void osgUpdate1(unsigned long _phaseInc);
+	void osgMaSlUpdate1(unsigned long _phaseInc, unsigned long _phaseOffset);
+	void osgMaSlUpdate2(unsigned long _phaseInc, unsigned long _phaseOffset);
+	void osgMaSlUpdate3(unsigned long _phaseInc, unsigned long _phaseOffset);
+	void osgMaSlUpdate4(unsigned long _phaseInc, unsigned long _phaseOffset);
+	void osgMaSlUpdate5(unsigned long _phaseInc, unsigned long _phaseOffset);
 	void park(long _alpha, long _beta);
 	void ipark(long _d, long _q);
 

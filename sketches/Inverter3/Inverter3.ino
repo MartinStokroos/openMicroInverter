@@ -1,3 +1,4 @@
+#include "Arduino.h"
 /*
  * File: Inverter3.ino
  * Purpose: openMicroInverter example project.
@@ -6,9 +7,9 @@
  * It synchronizes the output wave to the grid voltage. Do not connect the inverter output in parallel with
  * the grid with this example! There is no current control yet.
  *
- * Version: 1.0.0
+ * Version: 1.0.1
  * Release date: 30-10-2020
- * Last update:
+ * Last update: 01-12-2020
  *
  * URL: https://github.com/MartinStokroos/openMicroInverter
  *
@@ -90,7 +91,6 @@ int deltaGridPhase, deltaRefPhase;
 int extendedGridPhase, extendedRefPhase;
 int rateError, phaseError;
 long deltaPhase;
-unsigned long phaseOffset = 265289728; //phase offset between rfbk and rsin
 cordic10 gridCordic;
 cordic10 refCordic;
 bool mains_present;
@@ -213,7 +213,7 @@ void setup(){
 
   outputWave.osgBegin(f_min, TD); // initilize the DDS (frequency, startphase, timestep)
 
-  Serial.println("grid_phase inverter_phase"); //Arduino plotter legend. For this experiment only phase information output is printed. 
+  Serial.println("grid_phase inverter_phase"); //Arduino plotter legend. For this experiment only phase information output is printed.
 
   sei(); // enable interrupts
   nextLoop = micros() + LPPERIOD; // Set the loop timer variable for the next loop interval.
@@ -233,9 +233,7 @@ void loop(){
   //vBatt.publish();
   //iBatt.publish();
   potmeter.publish();
-  
-  phaseOffset = potmeter.average;
-  phaseOffset = phaseOffset<<20;
+  //x = potmeter.average;
 
   switch(taskIdx){ //100Hz/5=20Hz
     case 0:
@@ -268,7 +266,7 @@ void loop(){
        extendedRefPhase += deltaRefPhase;
        taskIdx++;
        break;
-      case 4: //pll-control (when grid is available)
+      case 4: //PLL-control (when grid is present)
         //rateError = deltaRefPhase - deltaGridPhase;
         phaseError = refCordicPhase - gridCordicPhase;
         deltaPhase = extendedRefPhase - extendedGridPhase; //for absolute phase control
@@ -285,11 +283,11 @@ void loop(){
         }
         if( (phaseError > -2048)&&(phaseError < 2048) ) { pll_locked = true; }
         else { pll_locked = false; }
-        
+
         Serial.print(gridCordicPhase);
         Serial.print(" ");
         Serial.println(refCordicPhase);
-        
+
         taskIdx = 0;
       break;
     }
@@ -351,12 +349,11 @@ ISR(ADC_vect){
   // read the current ADC input channel
   adcVal=ADCL; // store low byte
   adcVal+=ADCH<<8; // store high byte
-  
+
   switch (adcMuxIdx) {
     case 0:
       //time slot for sampling the grid voltage
       gridVolt.update(adcVal);
-      //refInstVal = outputWave.rfbk; // sample the reference wave and control the inverter output phase with the potmeter, or.. (under case 2:)
     break;
 
     case 1:
@@ -405,7 +402,7 @@ ISR(ADC_vect){
     case 5:
       // sample the potentiometer voltage
       potmeter.update(adcVal); // sample the debug potmeter voltage
-      
+
       // Do do the grid voltage IQ-down sampling here  to spread the computing burden:
       // multiply and sum samples with sequence 1  0  -1  0 for I channel
       // multiply and sum samples with sequence 0  1  0  -1 for Q channel
@@ -443,7 +440,6 @@ ISR(ADC_vect){
 
 
 
-
 /* ******************************************************************
 *  Timer1 ISR running at 6000Hz
 *********************************************************************/
@@ -455,8 +451,8 @@ ISR(TIMER1_OVF_vect) {
   #ifdef UNIPOL
     // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
     // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
-    outputWave.osgUpdate1(phaseIncrement, phaseOffset);
-    pdac_out = outputWave.rcos; //make unsigned, 10 bit range
+  outputWave.osgUpdate1(phaseIncrement);
+    pdac_out = outputWave.rcos;
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
     pdac_out += ICR1_OFFSET; // add offset to center between the BOTTOM to TOP value range of the timer.
     ndac_out += ICR1_OFFSET;
@@ -469,7 +465,7 @@ ISR(TIMER1_OVF_vect) {
   #endif
 
   #ifdef BIPOL
-    outputWave.osgUpdate1(phaseIncrement, phaseOffset);
+    outputWave.osgMaSlUpdate1(phaseIncrement, 0);
     dac_out = outputWave.rcos;
     // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
     //dac_out += 0x1FF;
@@ -481,7 +477,7 @@ ISR(TIMER1_OVF_vect) {
   #endif
 
   #ifdef HYBRID
-    outputWave.osgUpdate2(phaseIncrement, phaseOffset);
+    outputWave.osgMaSlUpdate2(phaseIncrement, 0);
     dac_out = outputWave.rcos;
     // write magnitude data to PWM output registers A&B (10bit).
     if (dac_out >= 0) {

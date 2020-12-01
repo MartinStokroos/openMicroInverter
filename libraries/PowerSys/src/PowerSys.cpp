@@ -2,9 +2,9 @@
 *
 * File: PowerSys.cpp
 * Purpose:
-* Version: 1.1.0
+* Version: 1.1.1
 * Initial release date: 17-10-2019
-* Date: 06-08-2020
+* Date: 01-12-2020
 * URL: https://github.com/MartinStokroos/openMicroInverter
 * License: MIT License
 *
@@ -34,7 +34,12 @@
 
 
 
-/*** Orthogonal Signal Generator (OSG) initialize ***/
+/*
+ * Orthogonal Signal Generator (OSG) initialize
+ *
+ *
+ *
+ */
 void PowerControl::osgBegin(float _freq, float _deltat) {
 	// calculate DDS tuning word
 	tuningWord=(unsigned long)(pow(2,32) * _freq * _deltat);
@@ -42,10 +47,31 @@ void PowerControl::osgBegin(float _freq, float _deltat) {
 
 
 
-/*** Orthogonal Signal Generators (OSG) with phase updating function. ***/
+/*
+ * Orthogonal Signal Generators (OSG)
+ *
+ *
+ */
+// FULL WAVE LUT, 10-bit OSG with raised (>=0) sin and cos outputs and cumulative phase increment.
+void PowerControl::osgUpdate1(unsigned long _phaseInc) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	rsin = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)); // reference sine output
+	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu1 + PHASE_OFFS_270)>>22)); // reference cosine output
+}
 
-// FULL WAVE LUT, 10-bit OSG. rsin and rcos are raised (>=0)
-void PowerControl::osgUpdate1(unsigned long _phaseInc, unsigned long _phaseOffset) {
+// To do: also do for all simple OSG's
+
+
+
+
+
+/*
+ * Orthogonal Signal Generators (OSG) of Master-Slave type with cumulative phase increment and phase offset.
+ *
+ *
+ */
+// FULL WAVE LUT, 10-bit Master-Slave OSG with raised (>=0) sin and cos outputs.
+void PowerControl::osgMaSlUpdate1(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
 	rfbk = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)) - 0x1FF; // PLL feedback output (signed)
@@ -53,8 +79,8 @@ void PowerControl::osgUpdate1(unsigned long _phaseInc, unsigned long _phaseOffse
 	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu2 + PHASE_OFFS_270)>>22)); // reference cosine output
 }
 
-// FULL WAVE LUT, 10-bit OSG. rsin and rcos are signed (for use with Park transforms)
-void PowerControl::osgUpdate2(unsigned long _phaseInc, unsigned long _phaseOffset) {
+// FULL WAVE LUT, 10-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate2(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
 	rfbk = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)) - 0x1FF; // PLL feedback output
@@ -62,8 +88,8 @@ void PowerControl::osgUpdate2(unsigned long _phaseInc, unsigned long _phaseOffse
 	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu2 + PHASE_OFFS_270)>>22))-0x1FF; // reference cosine output
 }
 
-// HALF WAVE LUT, 11-bit OSG. rsin and rcos are signed (for use with Park transforms)
-void PowerControl::osgUpdate3(unsigned long _phaseInc, unsigned long _phaseOffset) {
+// HALF WAVE LUT, 11-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate3(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
 	phaseIdx1 = phaseAccu1>>21;
@@ -102,8 +128,8 @@ void PowerControl::osgUpdate3(unsigned long _phaseInc, unsigned long _phaseOffse
 }
 
 
-// HALF WAVE LUT, 11-bit OSG. rsin and rcos are unsigned (rectified wave)
-void PowerControl::osgUpdate4(unsigned long _phaseInc, unsigned long _phaseOffset) {
+// HALF WAVE LUT, 11-bit Master-Slave OSG. rsin and rcos are unsigned (rectified wave)
+void PowerControl::osgMaSlUpdate4(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
 	phaseIdx1 = phaseAccu1>>21;
@@ -143,8 +169,8 @@ void PowerControl::osgUpdate4(unsigned long _phaseInc, unsigned long _phaseOffse
 
 
 
-// QUARTER WAVE LUT, 12-bit OSG. rsin and rcos are signed (for use with Park transforms)
-void PowerControl::osgUpdate5(unsigned long _phaseInc, unsigned long _phaseOffset) {
+// QUARTER WAVE LUT, 12-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate5(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
 	phaseIdx1 = phaseAccu1>>20;
@@ -212,7 +238,10 @@ void PowerControl::osgUpdate5(unsigned long _phaseInc, unsigned long _phaseOffse
 
 
 
-// Park transform
+/*
+ * Park transform
+ *
+ */
 void PowerControl::park(long _alpha, long _beta) {
 	alpha = _alpha;
 	beta = _beta;
@@ -222,7 +251,10 @@ void PowerControl::park(long _alpha, long _beta) {
 
 
 
-// inverse Park transform
+/*
+ * Inverse Park transform
+ *
+ */
 void PowerControl::ipark(long _d, long _q) {
 	d=_d;
 	q=_q;
