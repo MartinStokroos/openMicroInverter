@@ -25,10 +25,10 @@ There are two versions of the hardware. The first design is the development mode
 A rapid prototype of the inverter was realized for doing software development. The schematic of the development model is named *openMicroInverter_dev.pdf*.
 A somewhat older H-bridge driver, the [HIP4082](/datasheets/hip4082.pdf), is used for the design. The HIP4082 is a medium voltage, medium frequency full-bridge driver, nowadays by *Renesas*. The driver has a build in turn-on delay to create dead time required for switching between the top and the bottom FET's. With this feature it is possible to drive the chip directly from the PWM generators of the ATmega328P (which are less sophisticated than the timers of STM32 micro-controllers...).
 
-Currently I am investigating to use the [Dual Channel H-bridge Motor Shield from Elecrow](https://www.elecrow.com/dual-channel-hbridge-motor-shield-8a-22v-p-841.html) to enable experimenting with the inverter without to overcome too many hurdles for setting up the hardware. The high power DC-motor shield from Elecrow is a relatively new shield for *Arduino* including two 8A full H-bridges with discrete power MOSFETS.
+Currently I am investigating to use the [Dual Channel H-bridge Motor Shield from Elecrow](https://www.elecrow.com/dual-channel-hbridge-motor-shield-8a-22v-p-841.html) to enable experimenting with the inverter without to overcome too many hurdles to set up the hardware. The high power DC-motor shield from Elecrow is a relatively new shield for *Arduino* including two 8A full H-bridges with discrete power MOSFET's.
 
 **The openMicroInverter hardware**
-The *oμiv* will be designed as a single PCB module and is build with low-cost components.
+The plan is to design a single PCB module for the *oμiv* and to use low-cost components.
 
 To be continued...
 
@@ -113,7 +113,7 @@ Refer to the readme file of the [PowerSys](/libraries/PowerSys/README.md) Librar
 
 - Inverter1.ino
   Sketch to evaluate the different ways of gating the H-bridge to generate a sine wave output. This sketch works on the *openMicroInverter_dev* hardware. The inverter works in voltage-mode without output voltage control (open loop). The timing is according to *scheme-2*, which gives stable readings of the measurements but the switching frequency is on the low side and the duty-cycle range is limited between 12% and 88%. Unipolar switching runs the most smoothly.
- 
+
 ------
 
 - Inverter1b.ino
@@ -125,9 +125,9 @@ Connecting the transformer: Both legs of each H-bridge are in-phase, simultaneou
 
 Conclusions:
 
-- The voltage rating of the power MOSFET's from the Elecrow motor shield is 55V. This is rather low to have enough margin.
-- There should be a large capacitor at the (motor) supply input of the motor shield. Cable inductance can cause high voltage spikes at the supply terminals which could damage the MOSFET's.
-- I expected lower losses from the IRF3205S MOSFET's with an rds_on of 8mOhm. Probably the switching losses are quite high because of the high value gate resistors (51Ohm). The switching takes 200-300ns. The gate voltage might be increased to 15V.
+- The voltage rating of the power MOSFET's from the Elecrow motor shield is 55V. This is rather low to have a save margin.
+- There should be a large capacitor (e.g. 1000μF or more) at the (motor) supply input of the motor shield. Cable inductance can cause high voltage spikes at the supply terminals which could damage the MOSFET's.
+- I expected lower losses from the IRF3205S MOSFET's with an rds_on of 8mOhm. Probably the switching losses are quite high because of the high value gate resistors (51 Ohm). The switching takes 200-300ns. The gate voltage might be increased to 15V.
 - The motor shield works for demonstration purpose, but the board needs modifications to be useful with power converters.
 
 ------
