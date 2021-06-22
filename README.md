@@ -25,7 +25,7 @@ There are two versions of the hardware. The first design is the development mode
 A rapid prototype of the inverter was realized for doing software development. The schematic of the development model is named *openMicroInverter_dev.pdf*.
 A somewhat older H-bridge driver, the [HIP4082](/datasheets/hip4082.pdf), is used for the design. The HIP4082 is a medium voltage, medium frequency full-bridge driver, nowadays by *Renesas*. The driver has a build in turn-on delay to create dead time required for switching between the top and the bottom FET's. With this feature it is possible to drive the chip directly from the PWM generators of the ATmega328P (which are less sophisticated than the timers of STM32 micro-controllers...).
 
-Currently I am investigating to use the [Dual Channel H-bridge Motor Shield from Elecrow](https://www.elecrow.com/dual-channel-hbridge-motor-shield-8a-22v-p-841.html) to enable experimenting with the inverter without to overcome too many hurdles to set up the hardware. The high power DC-motor shield from Elecrow is a relatively new shield for *Arduino* including two 8A full H-bridges with discrete power MOSFET's.
+Currently I am investigating to use the [Dual Channel H-bridge Motor Shield from Elecrow](https://www.elecrow.com/wiki/index.php?title=Dual_Channel_H-Bridge_Motor_Shield) to enable experimenting with the inverter without to overcome too many hurdles to set up the hardware. The high power DC-motor shield from Elecrow is a relatively new shield for *Arduino* including two 8A full H-bridges with discrete power MOSFET's.
 
 **The openMicroInverter hardware**
 The plan is to design a single PCB module for the *oμiv* and to use low-cost components.
