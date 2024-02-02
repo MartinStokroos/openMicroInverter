@@ -1,30 +1,17 @@
 /*
- * File: Inverter1.ino
+ * File: Inverter1b.ino
  * Purpose: openMicroInverter example project. This sketch establishes a voltage-mode inverter without output voltage control (open loop).
- * Version: 1.2.1
- * Release date: 02-12-2019
+ * It uses the Dual Channel H-bridge Motor Shield (8A/22V) from Elecrow. This sketch has been adapted from example Inverter1.ino version 1.2.1.
+ * Version: 1.0.0
+ * Release date: 22-06-2021
  * 
- * Last update: 01-12-2020
+ * Last update: -
  * 
- * Changes in 1.2.1: Compatibility with PowerSys lib 1.1.1
- * 
- * Changes in 1.2.0
- * - Inverter amplitude control by potmeter (0-5V) on ADC input A5.
- * - RMS voltage readout on ADC input A0 (meant for Vgrid).
- * 
- * Changes in 1.1.0: 
- * - Works with powerSys library v1.1.0.
- * - Fluctuations in output voltage reading fixed by changing ADC clock prescaler from 128 to 64 (250kHz).
- *
  * URL: https://github.com/MartinStokroos/openMicroInverter
  *
  * License: MIT License
  *
- * Copyright (c) M.Stokroos 2019
- *
- *
- *
- * This sketch has been tested with the openMicroInverter_dev hardware.
+ * Copyright (c) M.Stokroos 2021
  *
  */
 
@@ -36,25 +23,26 @@
 #include <PowerSys.h> // https://github.com/MartinStokroos/openMicroInverter
 
 // H-bridge switching mode:
-#define UNIPOL    // unipolar switching
-//#define BIPOL   // bipolar switching
-//#define HYBRID  // bipolar switching, bottom H-bridge=LF
+#define UNIPOL    // unipolar switching - Complementary sin waves drive L+R legs of the H-bridge.
+//#define BIPOL   // bipolar switching - Complementary gate drive applied to both legs of the H-bridge.
+//#define HYBRID  // bipolar switching - Bottom FET's of the H-bridge are LF switched, top FET's are PWM driven.
 
 #define LPPERIOD 1000000    // main loop period time in us. In this case 1s.
 #define RMSWINDOW 20 // RMS window, number of samples used for the RMS calculation.
 
-#define PIN_LED 13    // PLL locking status indicator LED
-#define PIN_H_PWMA 9  // Timer1 OCR1A 10-bit PWM
-#define PIN_H_PWMB 10 // Timer1 OCR1B 10-bit PWM
-#define PIN_H_AHI 3   // H-bridge control pin
-#define PIN_H_BHI 11  // H-bridge control pin
-#define PIN_H_DIS 8   // enable inverter
-#define PIN_GRID_RELAY 2  // output relay
-#define PIN_DEBUG 4 // debugging output pin
+#define PIN_LED 13    // LED 
+#define PIN_H_P_1 9  // Timer1 OCR1A 10-bit PWM
+#define PIN_H_P_2 10 // Timer1 OCR1B 10-bit PWM
+#define PIN_H_1A 4
+#define PIN_H_1B 5
+#define PIN_H_2A 7
+#define PIN_H_2B 8
+#define PIN_H_EN 6
+#define PIN_DEBUG 3 // debugging output pin
 
 //scaling calibration
 const float gridVoltRange = 660.0; //Vp-p full scale.
-const float outputVoltRange = 668.0; //Vp-p full scale.
+const float outputVoltRange = 660.0; //Vp-p full scale.
 const float outputCurrRange = 4.5; //Ap-p full scale.
 const float vBattRange = 5.00; //Vbatt scaled max, not scaled correctly yet.
 const float iBattRange = 5.00; //Ibatt scaled max, not scaled correctly yet.
@@ -96,12 +84,13 @@ void setup(){
   // initialize serial communications:
   Serial.begin(115200);
   pinMode(PIN_LED, OUTPUT);
-  pinMode(PIN_H_PWMA, OUTPUT);
-  pinMode(PIN_H_PWMB, OUTPUT);
-  pinMode(PIN_H_AHI, OUTPUT);
-  pinMode(PIN_H_BHI, OUTPUT);
-  pinMode(PIN_GRID_RELAY, OUTPUT);
-  pinMode(PIN_H_DIS, OUTPUT);
+  pinMode(PIN_H_P_1, OUTPUT);
+  pinMode(PIN_H_P_2, OUTPUT);
+  pinMode(PIN_H_1A, OUTPUT);
+  pinMode(PIN_H_1B, OUTPUT);
+  pinMode(PIN_H_2A, OUTPUT);
+  pinMode(PIN_H_2B, OUTPUT);
+  pinMode(PIN_H_EN, OUTPUT);   
   pinMode(PIN_DEBUG, OUTPUT);
 
   // initialize ADC for continuous sampling mode
@@ -141,8 +130,10 @@ void setup(){
 
   #ifdef UNIPOL
   #define ICR1_OFFSET 0x09B;
-    digitalWriteFast(PIN_H_AHI, HIGH);
-    digitalWriteFast(PIN_H_BHI, HIGH);
+    digitalWriteFast(PIN_H_1A, HIGH); //XFMR between M1_A and M2_A. Tie M1_A and M1_B together. Also tie M2_A and M2_B together.
+    digitalWriteFast(PIN_H_1B, HIGH);
+    digitalWriteFast(PIN_H_2A, HIGH);
+    digitalWriteFast(PIN_H_2B, HIGH);
     bitClear(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
     bitClear(TCCR1A, COM1B0);  // Compare Match PWM 9
@@ -151,8 +142,10 @@ void setup(){
 
   #ifdef BIPOL
   #define ICR1_OFFSET 0x09B;
-    digitalWriteFast(PIN_H_AHI, HIGH);
-    digitalWriteFast(PIN_H_BHI, HIGH);
+    digitalWriteFast(PIN_H_1A, HIGH); //XFMR between M1_A and M2_A. Tie M1_A and M1_B together. Also tie M2_A and M2_B together.
+    digitalWriteFast(PIN_H_1B, HIGH);
+    digitalWriteFast(PIN_H_2A, HIGH);
+    digitalWriteFast(PIN_H_2B, HIGH);
     bitClear(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
     bitSet(TCCR1A, COM1B0);  // Compare Match PWM9, inverted
@@ -161,8 +154,10 @@ void setup(){
 
   #ifdef HYBRID
   #define ICR1_OFFSET 0x09B;
-    digitalWriteFast(PIN_H_AHI, LOW);
-    digitalWriteFast(PIN_H_BHI, LOW);
+    digitalWriteFast(PIN_H_1A, HIGH);
+    digitalWriteFast(PIN_H_1B, LOW);
+    digitalWriteFast(PIN_H_2A, HIGH);
+    digitalWriteFast(PIN_H_2B, LOW);    
     bitSet(TCCR1A, COM1A0);  // Compare Match PWM 10
     bitSet(TCCR1A, COM1A1);
     bitSet(TCCR1A, COM1B0);  // Compare Match PWM 9
@@ -187,6 +182,8 @@ void setup(){
 
   sei(); // enable interrupts
   nextLoop = micros() + LPPERIOD; // Set the loop timer variable for the next loop interval.
+  
+  digitalWriteFast(PIN_H_EN, HIGH); //enable H-bridge
 }
 
 
@@ -287,11 +284,10 @@ ISR(ADC_vect){
 *  Timer1 ISR running at 6000Hz
 *********************************************************************/
 ISR(TIMER1_OVF_vect) {
-  // complementary sin waves drive both legs in H-bridge. High-side and low-side are PWM-switched. AHI=5V and BHI=5V.
-  // (see HIP4082 application note; LF switched inverter ALI//BHI (pin4,2) and AHI//BLI (7,3) )
-  
+
   #ifdef UNIPOL
-	  outputWave.osgMaSlUpdate2(0, 0); // generate signed reference sin wave with DDS.
+    // Complementary sin waves drive L+R legs of the H-bridge.
+	  outputWave.osgMaSlUpdate2(0, 0); // generate signed reference wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     pdac_out = (int)amplitude + 0x1FF; //make unsigned, 10 bit range
     ndac_out = (~pdac_out) & 0x3FF; //invert for n-channel.
@@ -300,15 +296,14 @@ ISR(TIMER1_OVF_vect) {
     // write to PWM output registers A&B (10bit).
     OCR1AH = pdac_out>>8; //MSB
     OCR1AL = pdac_out; //LSB
-    //inverted output channel (dead-time correction inside the H-bridge driver HIP4082):
+    // Inverted output channel
     OCR1BH = ndac_out>>8; //MSB
     OCR1BL = ndac_out; //LSB
   #endif
 
-  // complementary gate drives in both legs of the H-bridge. AHI=5V and BHI=5V.
-  //dac_out += 0x1FF;
   #ifdef BIPOL
-	  outputWave.osgMaSlUpdate2(0, 0);     // generate the reference sin wave with DDS.
+    // Complementary gate drive applied to both legs of the H-bridge.
+	  outputWave.osgMaSlUpdate2(0, 0);     // generate the reference wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     dac_out = (int)amplitude + 0x1FF;
     dac_out += ICR1_OFFSET;
@@ -318,22 +313,27 @@ ISR(TIMER1_OVF_vect) {
     OCR1BL = OCR1AL;
   #endif
 
-  // LF+PWM dive. Not optimal yet... Reference wave should be half wave with 10bit or more amplitude range.
   #ifdef HYBRID
-	  outputWave.osgMaSlUpdate2(0, 0); // generate the reference sin wave with DDS.
+    // LF+PWM dive. Not optimal yet... Reference wave should be half wave with 10bit or more amplitude range.
+	  outputWave.osgMaSlUpdate2(0, 0); // generate the reference wave with DDS.
     amplitude = (float)outputWave.rcos * mgain;
     dac_out = (int)amplitude;
     if (dac_out >= 0) {
-      digitalWriteFast(PIN_H_AHI, LOW); // write magnitude data to PWM output registers A&B (10bit).
-      digitalWriteFast(PIN_H_BHI, HIGH);
+      //dac_out = dac_out + 0x1FF; //?
+      digitalWriteFast(PIN_H_2A, LOW);
+      digitalWriteFast(PIN_H_2B, LOW);
+      digitalWriteFast(PIN_H_1A, HIGH);
+      digitalWriteFast(PIN_H_1B, HIGH);
       //dac_out = dac_out<<1; //scaling incorrect - this should be fixed by lookup table in PowerSys lib...
       //dac_out += ICR1_OFFSET; //?
       OCR1AH = dac_out>>8; // top 8 bits
       OCR1AL = dac_out; // bottom 8 bits
     }
     else {
-      digitalWriteFast(PIN_H_BHI, LOW);
-      digitalWriteFast(PIN_H_AHI, HIGH);
+      digitalWriteFast(PIN_H_1A, LOW);
+      digitalWriteFast(PIN_H_1B, LOW);
+      digitalWriteFast(PIN_H_2A, HIGH);
+      digitalWriteFast(PIN_H_2B, HIGH); 
       dac_out = -dac_out; // + ICR1_OFFSET; //?
       //dac_out = (-dac_out)<<1; //times 2
       OCR1BH = dac_out>>8; // top 8 bits

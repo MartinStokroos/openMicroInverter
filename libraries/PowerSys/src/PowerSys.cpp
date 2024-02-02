@@ -2,8 +2,9 @@
 *
 * File: PowerSys.cpp
 * Purpose:
-* Version: 1.0.0
-* Date: 17-10-2019
+* Version: 1.1.1
+* Initial release date: 17-10-2019
+* Date: 01-12-2020
 * URL: https://github.com/MartinStokroos/openMicroInverter
 * License: MIT License
 *
@@ -33,7 +34,12 @@
 
 
 
-//*********** Orthogonal Signal Generator initialize ****//
+/*
+ * Orthogonal Signal Generator (OSG) initialize
+ *
+ *
+ *
+ */
 void PowerControl::osgBegin(float _freq, float _deltat) {
 	// calculate DDS tuning word
 	tuningWord=(unsigned long)(pow(2,32) * _freq * _deltat);
@@ -41,19 +47,202 @@ void PowerControl::osgBegin(float _freq, float _deltat) {
 
 
 
-//*********** Orthogonal Signal Generator with phase update. Must be called regularly at fixed time intervals *****//
-void PowerControl::osgUpdate(unsigned long _phaseInc, unsigned long _phaseOffset){
+/*
+ * Orthogonal Signal Generators (OSG)
+ *
+ *
+ */
+// FULL WAVE LUT, 10-bit OSG with raised (>=0) sin and cos outputs and cumulative phase increment.
+void PowerControl::osgUpdate1(unsigned long _phaseInc) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	rsin = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)); // reference sine output
+	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu1 + PHASE_OFFS_270)>>22)); // reference cosine output
+}
+
+// To do: also do for all simple OSG's
+
+
+
+
+
+/*
+ * Orthogonal Signal Generators (OSG) of Master-Slave type with cumulative phase increment and phase offset.
+ *
+ *
+ */
+// FULL WAVE LUT, 10-bit Master-Slave OSG with raised (>=0) sin and cos outputs.
+void PowerControl::osgMaSlUpdate1(unsigned long _phaseInc, unsigned long _phaseOffset) {
 	phaseAccu1 += (tuningWord + _phaseInc);
 	phaseAccu2 = (phaseAccu1 + _phaseOffset);
-	rfbk = pgm_read_word(sinlut1024 + (unsigned int)(phaseAccu1>>22))-0x1FF; // feedback to PLL
-	rsin = pgm_read_word(sinlut1024 + (unsigned int)(phaseAccu2>>22))-0x1FF; // reference sine wave output
-	rcos = pgm_read_word(sinlut1024 + (unsigned int)((phaseAccu2 + PHASE_OFFS_270)>>22))-0x1FF; // reference cosine output
+	rfbk = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)) - 0x1FF; // PLL feedback output (signed)
+	rsin = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu2>>22)); // reference sine output
+	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu2 + PHASE_OFFS_270)>>22)); // reference cosine output
+}
+
+// FULL WAVE LUT, 10-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate2(unsigned long _phaseInc, unsigned long _phaseOffset) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	phaseAccu2 = (phaseAccu1 + _phaseOffset);
+	rfbk = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu1>>22)) - 0x1FF; // PLL feedback output
+	rsin = pgm_read_word(fullwave_lut1024 + (unsigned int)(phaseAccu2>>22)) - 0x1FF; // reference sine output
+	rcos = pgm_read_word(fullwave_lut1024 + (unsigned int)((phaseAccu2 + PHASE_OFFS_270)>>22))-0x1FF; // reference cosine output
+}
+
+// HALF WAVE LUT, 11-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate3(unsigned long _phaseInc, unsigned long _phaseOffset) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	phaseAccu2 = (phaseAccu1 + _phaseOffset);
+	phaseIdx1 = phaseAccu1>>21;
+	phaseIdx2 = phaseAccu2>>21;
+	phaseIdx3 = (phaseAccu2 + PHASE_OFFS_270)>>21;
+	
+	if(phaseIdx1>=0 && phaseIdx1<1024) //to do: use 32 bit phase limits
+		{
+		rfbk = pgm_read_word(quarterwave_lut1024 + phaseIdx1); 
+		}
+	else if(phaseIdx1>=1024 && phaseIdx1<2048)
+		{
+		rfbk = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx1)); 
+		}
+	rfbk = rfbk>>1; // 10-bit test output
+	
+	if(phaseIdx2>=0 && phaseIdx2<1024)
+		{
+		rsin = pgm_read_word(quarterwave_lut1024 + phaseIdx2);
+		}
+	else if(phaseIdx2>=1024 && phaseIdx2<2048)
+		{
+		rsin = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx2));
+		}
+	rsin = rsin>>1; // 10-bit test output
+	
+	if(phaseIdx3>=0 && phaseIdx3<1024)
+		{
+		rcos = pgm_read_word(quarterwave_lut1024 + phaseIdx3);
+		}
+	else if(phaseIdx3>=1024 && phaseIdx3<2048)
+		{
+		rcos = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx3));
+		}
+ 	rcos = rcos>>1; // 10-bit test output
+}
+
+
+// HALF WAVE LUT, 11-bit Master-Slave OSG. rsin and rcos are unsigned (rectified wave)
+void PowerControl::osgMaSlUpdate4(unsigned long _phaseInc, unsigned long _phaseOffset) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	phaseAccu2 = (phaseAccu1 + _phaseOffset);
+	phaseIdx1 = phaseAccu1>>21;
+	phaseIdx2 = phaseAccu2>>21;
+	phaseIdx3 = (phaseAccu2 + PHASE_OFFS_270)>>21;
+	
+	if(phaseIdx1>=0 && phaseIdx1<1024)
+		{
+		rfbk = pgm_read_word(quarterwave_lut1024 + phaseIdx1); 
+		}
+	else if(phaseIdx1>=1024 && phaseIdx1<2048)
+		{
+		rfbk = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx1)); 
+		}
+	rfbk = rfbk>>1; // 10-bit test output
+	
+	if(phaseIdx2>=0 && phaseIdx2<1024)
+		{
+		rsin = pgm_read_word(quarterwave_lut1024 + phaseIdx2);
+		}
+	else if(phaseIdx2>=1024 && phaseIdx2<2048)
+		{
+		rsin = pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx2));
+		}
+ 	rsin = rsin>>1; // 10-bit test output
+	
+	if(phaseIdx3>=0 && phaseIdx3<1024)
+		{
+		rcos = pgm_read_word(quarterwave_lut1024 + phaseIdx3);
+		}
+	else if(phaseIdx3>=1024 && phaseIdx3<2048)
+		{
+		rcos = pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx3));
+		}
+	rcos = rcos>>1; // 10-bit test output
 }
 
 
 
-// Park transform
-void PowerControl::park(long _alpha, long _beta){
+// QUARTER WAVE LUT, 12-bit Master-Slave OSG. rsin and rcos are signed (for use with Park transforms)
+void PowerControl::osgMaSlUpdate5(unsigned long _phaseInc, unsigned long _phaseOffset) {
+	phaseAccu1 += (tuningWord + _phaseInc);
+	phaseAccu2 = (phaseAccu1 + _phaseOffset);
+	phaseIdx1 = phaseAccu1>>20;
+	phaseIdx2 = phaseAccu2>>20;
+	phaseIdx3 = (phaseAccu2 + PHASE_OFFS_270)>>20;
+
+	if(phaseIdx1>=0 && phaseIdx1<1024)
+		{
+		rfbk = pgm_read_word(quarterwave_lut1024 + phaseIdx1); 
+		}
+	else if(phaseIdx1>=1024 && phaseIdx1<2048)
+		{
+		rfbk = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx1)); 
+		}
+	else if(phaseIdx1>=2048 && phaseIdx1<3072)
+		{
+		rfbk = -pgm_read_word(quarterwave_lut1024 + (phaseIdx1 - 2048)); 
+		}
+	else if(phaseIdx1>=3072 && phaseIdx1<4096)
+		{
+		rfbk = pgm_read_word(quarterwave_lut1024 + (4096 - phaseIdx1));
+		}
+	rfbk -= 0x3FF; // PLL feedback output
+	rfbk = rfbk>>2; // 10-bit test output
+
+	if(phaseIdx2>=0 && phaseIdx2<1024)
+		{
+		rsin = pgm_read_word(quarterwave_lut1024 + phaseIdx2);
+		}
+	else if(phaseIdx2>=1024 && phaseIdx2<2048)
+		{
+		rsin = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx2));
+		}
+	else if(phaseIdx2>=2048 && phaseIdx2<3072)
+		{
+		rsin = -pgm_read_word(quarterwave_lut1024 + (phaseIdx2 - 2048));
+		}
+	else if(phaseIdx2>=3072 && phaseIdx2<4096)
+		{
+		rsin = pgm_read_word(quarterwave_lut1024 + (4096 - phaseIdx2));
+		}
+	rsin -= 0x3FF;
+	rsin = rsin>>2; // 10-bit test output
+		
+	if(phaseIdx3>=0 && phaseIdx3<1024)
+		{
+		rcos = pgm_read_word(quarterwave_lut1024 + phaseIdx3);
+		}
+	else if(phaseIdx3>=1024 && phaseIdx3<2048)
+		{
+		rcos = -pgm_read_word(quarterwave_lut1024 + (2048 - phaseIdx3));
+		}
+	else if(phaseIdx3>=2048 && phaseIdx3<3072)
+		{
+		rcos = -pgm_read_word(quarterwave_lut1024 + (phaseIdx3 - 2048));
+		}
+	else if(phaseIdx3>=3072 && phaseIdx3<4096)
+		{
+		rcos = pgm_read_word(quarterwave_lut1024 + (4096 - phaseIdx3));
+		}
+	rcos -= 0x3FF;
+	rcos = rcos>>2; // 10-bit test output
+}
+
+
+
+
+/*
+ * Park transform
+ *
+ */
+void PowerControl::park(long _alpha, long _beta) {
 	alpha = _alpha;
 	beta = _beta;
 	d = alpha*rcos + beta*rsin;
@@ -62,8 +251,11 @@ void PowerControl::park(long _alpha, long _beta){
 
 
 
-// inverse Park transform
-void PowerControl::ipark(long _d, long _q){
+/*
+ * Inverse Park transform
+ *
+ */
+void PowerControl::ipark(long _d, long _q) {
 	d=_d;
 	q=_q;
 	alpha = d*rcos - q*rsin;
